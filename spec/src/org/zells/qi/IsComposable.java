@@ -1,62 +1,79 @@
 package org.zells.qi;
 
-
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class IsComposable {
 
     @Test
-    @Disabled("TBD")
     void DeliverToSelf() {
+        Cell cell = new Cell();
+        assertTrue(cell.deliver(new Path(Self.name(), Self.name()), new Path()));
     }
 
     @Test
-    @Disabled("TBD")
     void DeliverToChild() {
+        Cell cell = new Cell();
+        cell.createChild("foo");
+        assertTrue(cell.deliver(new Path(Child.name("foo")), new Path()));
     }
 
     @Test
-    @Disabled("TBD")
     void NoChildren() {
+        Cell cell = new Cell();
+        assertFalse(cell.deliver(new Path(Child.name("foo")), new Path()));
     }
 
     @Test
-    @Disabled("TBD")
     void NotAChild() {
+        Cell cell = new Cell();
+        cell.createChild("foo");
+        assertFalse(cell.deliver(new Path(Child.name("bar")), new Path()));
     }
 
     @Test
-    @Disabled("TBD")
     void DeliverToGrandChild() {
+        Cell cell = new Cell();
+        Cell foo = cell.createChild("foo");
+        foo.createChild("bar");
+        assertTrue(cell.deliver(new Path(Child.name("foo"), Child.name("bar")), new Path()));
     }
 
     @Test
-    @Disabled("TBD")
     void NotAGrandChild() {
+        Cell cell = new Cell();
+        cell.createChild("foo");
+        assertFalse(cell.deliver(new Path(Child.name("foo"), Child.name("bar")), new Path()));
     }
 
     @Test
-    @Disabled("TBD")
     void DeliverToParent() {
+        Cell cell = new Cell();
+        Cell child = cell.createChild("foo");
+        assertTrue(child.deliver(new Path(Parent.name()), new Path()));
     }
 
     @Test
-    @Disabled("TBD")
     void NoParent() {
+        Cell cell = new Cell();
+        assertFalse(cell.deliver(new Path(Parent.name()), new Path()));
     }
 
     @Test
-    @Disabled("TBD")
     void DeliverToGrandParent() {
+        Cell cell = new Cell();
+        Cell child = cell.createChild("foo");
+        Cell grandChild = child.createChild("bar");
+        assertTrue(grandChild.deliver(new Path(Parent.name(), Parent.name()), new Path()));
     }
 
     @Test
-    @Disabled("TBD")
     void DeliverToRoot() {
+        Cell cell = new Cell();
+        Cell child = cell.createChild("foo");
+        Cell grandChild = child.createChild("bar");
+        assertTrue(grandChild.deliver(new Path(Root.name()), new Path()));
     }
 }
