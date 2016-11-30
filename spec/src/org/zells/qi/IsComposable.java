@@ -4,11 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("SameParameterValue")
-public class IsComposable {
-
-    private boolean wasDelivered;
-    private String delivered;
+public class IsComposable extends Specification {
 
     @Test
     void DeliverMessage() {
@@ -22,8 +18,8 @@ public class IsComposable {
     void DeliverToSelf() {
         ReceivingCell cell = new ReceivingCell();
 
-        deliver(cell, "one", ":.:", "m");
-        assertWasDelivered("one( m)");
+        deliver(cell, "two", ":.:", "m2");
+        assertWasDelivered("two( m2)");
     }
 
     @Test
@@ -107,50 +103,23 @@ public class IsComposable {
         assertWasDelivered("one( foo.bar.m)");
     }
 
-    private void assertWasDelivered(String to) {
-        assertTrue(wasDelivered);
-        assertEquals(to, delivered);
-    }
+    private String delivered;
 
     private void deliver(ReceivingCell sendingAndReceiving, String context, String receiver, String message) {
         deliver(sendingAndReceiving, sendingAndReceiving, context, receiver, message);
     }
 
-    private void deliver(Cell sending, String context, String receiver, String message) {
-        deliver(sending, null, context, receiver, message);
-    }
-
     private void deliver(Cell sending, ReceivingCell receiving, String context, String receiver, String message) {
-        wasDelivered = sending.deliver(new Delivery(parse(context), parse(receiver), parse(message)));
+        deliver(sending, context, receiver, message);
 
         if (wasDelivered && receiving != null) {
             delivered = receiving.delivered.toString();
         }
     }
 
-    private Path parse(String string) {
-        Path path = new Path();
-        if (string.isEmpty()) {
-            return path;
-        }
-
-        for (String name : string.split("\\.")) {
-            path = path.with(nameOf(name));
-        }
-        return path;
-    }
-
-    private Name nameOf(String string) {
-        switch (string) {
-            case ":":
-                return Self.name();
-            case "^":
-                return Parent.name();
-            case "°":
-                return Root.name();
-            default:
-                return Child.name(string);
-        }
+    private void assertWasDelivered(String to) {
+        assertTrue(wasDelivered);
+        assertEquals(to, delivered);
     }
 
     private class ReceivingCell extends Cell {
