@@ -2,5 +2,5 @@ package org.zells.qi;
 
 interface Reaction {
 
-    void execute();
+    void execute(Cell cell, Delivery delivery);
 }

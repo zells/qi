@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("SameParameterValue")
 public class IsComposable extends Specification {
 
     @Test
@@ -12,14 +13,6 @@ public class IsComposable extends Specification {
 
         deliver(cell, "one", "", "m");
         assertWasDelivered("one( m)");
-    }
-
-    @Test
-    void DeliverToSelf() {
-        ReceivingCell cell = new ReceivingCell();
-
-        deliver(cell, "two", ":.:", "m2");
-        assertWasDelivered("two( m2)");
     }
 
     @Test

@@ -21,10 +21,8 @@ class Cell {
             if (reaction == null) {
                 return false;
             }
-            reaction.execute();
+            reaction.execute(this, delivery);
             return true;
-        } else if (delivery.nextName().equals(Self.name())) {
-            return deliver(delivery.toSelf());
         } else if (delivery.nextName().equals(Parent.name())) {
             return parent != null && parent.deliver(delivery.toParent());
         } else if (delivery.nextName().equals(Root.name())) {
@@ -41,6 +39,9 @@ class Cell {
     }
 
     Cell createChild(String name) {
+        if (children.containsKey(Child.name(name))) {
+            return children.get(Child.name(name));
+        }
         return putChild(name, new Cell(this));
     }
 

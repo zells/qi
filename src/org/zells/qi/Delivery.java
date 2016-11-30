@@ -11,12 +11,20 @@ class Delivery {
         this.message = message;
     }
 
+    Path getMessage() {
+        return message;
+    }
+
     boolean hasArrived() {
         return receiver.isEmpty();
     }
 
     Name nextName() {
         return receiver.first();
+    }
+
+    Delivery send(Path receiver, Path message) {
+        return new Delivery(context, receiver, message);
     }
 
     Delivery toChild() {

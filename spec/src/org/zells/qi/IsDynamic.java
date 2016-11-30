@@ -1,59 +1,157 @@
 package org.zells.qi;
 
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class IsDynamic {
+public class IsDynamic extends Specification {
+
+    @BeforeEach
+    void SetUp() {
+        GlobalUniqueIdentifierGenerator.setGenerator(new GlobalUniqueIdentifierGenerator() {
+            String next() {
+                return "generated-frame-name";
+            }
+        });
+    }
 
     @Test
-    @Disabled
     void NoReaction() {
         Cell cell = new Cell();
-        assertFalse(cell.deliver(new Delivery(new Path(), new Path(), new Path())));
+
+        deliver(cell, "", "", "");
+        assertFalse(wasDelivered);
     }
 
     @Test
-    @Disabled
     void ExecuteReaction() {
-        final boolean[] executed = new boolean[1];
+        Cell cell = new Cell();
+        cell.setReaction(catchDelivery());
+
+        deliver(cell, "one", "", "m");
+        assertTrue(wasDelivered);
+        assertEquals("one( m)", delivered.toString());
+    }
+
+    @Test
+    void NoMessageSends() {
+        Cell cell = new Cell();
+        DynamicReaction reaction = new DynamicReaction();
+        cell.setReaction(reaction);
+
+        deliver(cell, "oen", "", "m");
+        assertTrue(wasDelivered);
+    }
+
+    @Test
+    void ExecuteMessageSends() {
+        Cell cell = new Cell();
+        cell.setReaction((new DynamicReaction())
+                .add(send("foo", "bar")));
+
+        Cell foo = cell.createChild("foo");
+        foo.setReaction(catchDelivery());
+
+        deliver(cell, "one", "", "m");
+        assertTrue(wasDelivered);
+        assertNotNull(delivered);
+        assertEquals("one.foo( ^.bar)", delivered.toString());
+    }
+
+    @Test
+    void SendMessage() {
+        Cell cell = new Cell();
+        cell.setReaction((new DynamicReaction())
+                .add(send("foo", "@.baz")));
+
+        Cell foo = cell.createChild("foo");
+        foo.setReaction(catchDelivery());
+
+        deliver(cell, "one", "", "m");
+        assertTrue(wasDelivered);
+        assertNotNull(delivered);
+        assertEquals("one.foo( ^.m.baz)", delivered.toString());
+    }
+
+    @Test
+    void SendToMessage() {
+        Cell cell = new Cell();
+        cell.setReaction((new DynamicReaction())
+                .add(send("@.baz", "bar")));
+
+        Cell foo = cell.createChild("foo");
+        Cell baz = foo.createChild("baz");
+        baz.setReaction(catchDelivery());
+
+        deliver(cell, "one", "", "foo");
+        assertTrue(wasDelivered);
+        assertNotNull(delivered);
+        assertEquals("one.foo.baz( ^.^.bar)", delivered.toString());
+    }
+
+    @Test
+    void SendFrame() {
+        Cell cell = new Cell();
+        cell.setReaction((new DynamicReaction())
+                .add(send("foo", "#.bar")));
+
+        cell.createChild("foo")
+            .setReaction(catchDelivery());
+
+        deliver(cell, "one", "", "");
+        assertTrue(wasDelivered);
+        assertNotNull(delivered);
+        assertEquals("one.foo( ^.#.generated-frame-name.bar)", delivered.toString());
+    }
+
+    @Test
+    void SendToFrame() {
+        Cell cell = new Cell();
+        cell.setReaction((new DynamicReaction())
+                .add(send("#.foo", "m")));
+
+        cell.createChild("#")
+                .createChild("generated-frame-name")
+                .createChild("foo")
+                .setReaction(catchDelivery());
+
+        deliver(cell, "one", "", "");
+        assertTrue(wasDelivered);
+        assertNotNull(delivered);
+        assertEquals("one.#.generated-frame-name.foo( ^.^.^.m)", delivered.toString());
+    }
+
+    @Test
+    void CreateUniqueFrames() {
+        GlobalUniqueIdentifierGenerator.setGenerator(new GlobalUniqueIdentifierGenerator() {
+            private String id = "";
+            String next() {
+                return id += "*";
+            }
+        });
 
         Cell cell = new Cell();
-        cell.setReaction(() -> executed[0] = true);
+        cell.setReaction((new DynamicReaction())
+                .add(send("foo", "#.bar")));
 
-        assertTrue(cell.deliver(new Delivery(new Path(), new Path(), new Path())));
-        assertTrue(executed[0]);
+        cell.createChild("foo")
+                .setReaction(catchDelivery());
+
+        deliver(cell, "one", "", "");
+        assertEquals("one.foo( ^.#.*.bar)", delivered.toString());
+
+        deliver(cell, "one", "", "");
+        assertEquals("one.foo( ^.#.**.bar)", delivered.toString());
     }
 
-    @Test
-    @Disabled("TBD")
-    void NoMessageSends() {
+    private Delivery delivered;
+
+    private Reaction catchDelivery() {
+        return (Cell cell, Delivery delivery) -> delivered = delivery;
     }
 
-    @Test
-    @Disabled("TBD")
-    void ExecuteMessageSends() {
-    }
-
-    @Test
-    @Disabled("TBD")
-    void SendMessage() {
-    }
-
-    @Test
-    @Disabled("TBD")
-    void SendToMessage() {
-    }
-
-    @Test
-    @Disabled("TBD")
-    void SendFrame() {
-    }
-
-    @Test
-    @Disabled("TBD")
-    void SendToFrame() {
+    private MessageSend send(String receiver, String message) {
+        return new MessageSend(p(receiver), p(message));
     }
 }

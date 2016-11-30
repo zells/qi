@@ -38,7 +38,7 @@ class Path {
         return context.with(this);
     }
 
-    private Path with(Path path) {
+    Path with(Path path) {
         Path newPath = this;
         for (Name n : path.names) newPath = newPath.with(n);
         return newPath;
