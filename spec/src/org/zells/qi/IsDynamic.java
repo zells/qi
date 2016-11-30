@@ -145,12 +145,6 @@ public class IsDynamic extends Specification {
         assertEquals("one.foo( ^.#.**.bar)", delivered.toString());
     }
 
-    private Delivery delivered;
-
-    private Reaction catchDelivery() {
-        return (Cell cell, Delivery delivery) -> delivered = delivery;
-    }
-
     private MessageSend send(String receiver, String message) {
         return new MessageSend(p(receiver), p(message));
     }

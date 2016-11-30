@@ -1,9 +1,21 @@
 package org.zells.qi;
 
-@SuppressWarnings("SameParameterValue")
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class Specification {
 
     boolean wasDelivered;
+    Delivery delivered;
+
+    void assertWasDelivered(String to) {
+        assertTrue(wasDelivered);
+        assertEquals(to, delivered.toString());
+    }
+
+    Reaction catchDelivery() {
+        return (Cell cell, Delivery delivery) -> delivered = delivery;
+    }
 
     void deliver(Cell sending, String context, String receiver, String message) {
         wasDelivered = sending.deliver(new Delivery(p(context), p(receiver), p(message)));
