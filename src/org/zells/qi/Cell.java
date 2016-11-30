@@ -42,10 +42,13 @@ class Cell {
     boolean deliver(Delivery delivery) {
         if (delivery.hasArrived()) {
             if (reaction == null) {
-                return false;
+                return stem != null && deliver(delivery.toStem(stem));
             }
+
             reaction.execute(this, delivery);
             return true;
+        } else if (delivery.nextName().equals(Stem.name())) {
+            return stem != null && deliver(delivery.toStemExplicit(stem));
         } else if (delivery.nextName().equals(Parent.name())) {
             return parent != null && parent.deliver(delivery.toParent());
         } else if (delivery.nextName().equals(Root.name())) {
@@ -56,6 +59,8 @@ class Cell {
             }
         } else if (children.containsKey(delivery.nextName())) {
             return children.get(delivery.nextName()).deliver(delivery.toChild());
+        } else if (stem != null) {
+            return deliver(delivery.toStem(stem));
         }
 
         return false;

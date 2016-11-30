@@ -4,11 +4,17 @@ class Delivery {
     private Path context;
     private Path receiver;
     private Path message;
+    private Path role;
 
     Delivery(Path context, Path receiver, Path message) {
+        this(context, receiver, message, receiver);
+    }
+
+    private Delivery(Path context, Path receiver, Path message, Path role) {
         this.context = context;
         this.receiver = receiver;
         this.message = message;
+        this.role = role;
     }
 
     Path getMessage() {
@@ -27,20 +33,28 @@ class Delivery {
         return new Delivery(context, receiver, message);
     }
 
+    Delivery toStem(Path stem) {
+        return new Delivery(context, stem.with(receiver), message, role);
+    }
+
+    Delivery toStemExplicit(Path stem) {
+        return new Delivery(context, stem.with(receiver.rest()), message, stem.with(role.rest()));
+    }
+
     Delivery toChild() {
-        return new Delivery(context.with(nextName()), receiver.rest(), message.in(Parent.name()));
+        return new Delivery(context.with(role.first()), receiver.rest(), message.in(Parent.name()), role.rest());
     }
 
     Delivery toParent() {
-        return new Delivery(context.up(), receiver.rest(), message.in(context.last()));
+        return new Delivery(context.up(), receiver.rest(), message.in(context.last()), role.in(context.last()));
     }
 
     Delivery toRoot() {
-        return new Delivery(context.up(), receiver, message.in(context.last()));
+        return new Delivery(context.up(), receiver, message.in(context.last()), role.in(context.last()));
     }
 
     Delivery toSelf() {
-        return new Delivery(context, receiver.rest(), message);
+        return new Delivery(context, receiver.rest(), message, role);
     }
 
     @Override
@@ -53,7 +67,7 @@ class Delivery {
 
     @Override
     public int hashCode() {
-        return context.hashCode() + receiver.hashCode() + message.hashCode();
+        return context.hashCode() + receiver.hashCode() + message.hashCode() + role.hashCode();
     }
 
     @Override

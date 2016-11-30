@@ -40,13 +40,21 @@ class Path {
 
     Path with(Path path) {
         Path newPath = this;
-        for (Name n : path.names) newPath = newPath.with(n);
+        for (Name n : path.names) {
+            newPath = newPath.with(n);
+        }
         return newPath;
     }
 
     Path with(Name name) {
         List<Name> newNames = new ArrayList<>(names.size() + 1);
-        for (Name n : names) newNames.add(n);
+        for (Name n : names) {
+            if (n.equals(Parent.name()) && newNames.size() > 0 && newNames.get(newNames.size() - 1) instanceof Child) {
+                newNames = newNames.subList(0, newNames.size() - 1);
+            } else {
+                newNames.add(n);
+            }
+        }
         newNames.add(name);
 
         return new Path(newNames);

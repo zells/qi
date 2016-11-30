@@ -1,5 +1,7 @@
 package org.zells.qi;
 
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -7,6 +9,15 @@ class Specification {
 
     boolean wasDelivered;
     Delivery delivered;
+
+    @BeforeEach
+    void SetUp() {
+        GlobalUniqueIdentifierGenerator.setGenerator(new GlobalUniqueIdentifierGenerator() {
+            String next() {
+                return "generated-frame-name";
+            }
+        });
+    }
 
     void assertWasDelivered(String to) {
         assertTrue(wasDelivered);
@@ -19,6 +30,10 @@ class Specification {
 
     void deliver(Cell sending, String context, String receiver, String message) {
         wasDelivered = sending.deliver(new Delivery(p(context), p(receiver), p(message)));
+    }
+
+    MessageSend send(String receiver, String message) {
+        return new MessageSend(p(receiver), p(message));
     }
 
     Path p(String string) {
@@ -43,6 +58,8 @@ class Specification {
                 return Message.name();
             case "#":
                 return Frame.name();
+            case "*":
+                return Stem.name();
             default:
                 return Child.name(string);
         }

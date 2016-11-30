@@ -7,15 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class IsDynamic extends Specification {
 
-    @BeforeEach
-    void SetUp() {
-        GlobalUniqueIdentifierGenerator.setGenerator(new GlobalUniqueIdentifierGenerator() {
-            String next() {
-                return "generated-frame-name";
-            }
-        });
-    }
-
     @Test
     void NoReaction() {
         Cell cell = new Cell();
@@ -143,9 +134,5 @@ public class IsDynamic extends Specification {
 
         deliver(cell, "one", "", "");
         assertEquals("one.foo( ^.#.**.bar)", delivered.toString());
-    }
-
-    private MessageSend send(String receiver, String message) {
-        return new MessageSend(p(receiver), p(message));
     }
 }
