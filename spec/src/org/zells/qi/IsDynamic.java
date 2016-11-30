@@ -3,16 +3,28 @@ package org.zells.qi;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class IsDynamic {
 
     @Test
-    @Disabled("TBD")
+    @Disabled
     void NoReaction() {
+        Cell cell = new Cell();
+        assertFalse(cell.deliver(new Delivery(new Path(), new Path(), new Path())));
     }
 
     @Test
-    @Disabled("TBD")
+    @Disabled
     void ExecuteReaction() {
+        final boolean[] executed = new boolean[1];
+
+        Cell cell = new Cell();
+        cell.setReaction(() -> executed[0] = true);
+
+        assertTrue(cell.deliver(new Delivery(new Path(), new Path(), new Path())));
+        assertTrue(executed[0]);
     }
 
     @Test

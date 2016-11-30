@@ -7,6 +7,7 @@ class Cell {
 
     private Map<Name, Cell> children = new HashMap<>();
     private Cell parent;
+    private Reaction reaction;
 
     Cell() {
     }
@@ -15,21 +16,25 @@ class Cell {
         this.parent = parent;
     }
 
-    boolean deliver(Path receiver, Path message) {
-        if (receiver.isEmpty()) {
-            return true;
-        } else if (receiver.first().equals(Self.name())) {
-            return deliver(receiver.rest(), message);
-        } else if (receiver.first().equals(Parent.name())) {
-            return parent != null && parent.deliver(receiver.rest(), message);
-        } else if (receiver.first().equals(Root.name())) {
-            if (parent != null) {
-                return parent.deliver(receiver, message);
-            } else {
-                return deliver(receiver.rest(), message);
+    boolean deliver(Delivery delivery) {
+        if (delivery.hasArrived()) {
+            if (reaction == null) {
+                return false;
             }
-        } else if (children.containsKey(receiver.first())) {
-            return children.get(receiver.first()).deliver(receiver.rest(), message);
+            reaction.execute();
+            return true;
+        } else if (delivery.nextName().equals(Self.name())) {
+            return deliver(delivery.toSelf());
+        } else if (delivery.nextName().equals(Parent.name())) {
+            return parent != null && parent.deliver(delivery.toParent());
+        } else if (delivery.nextName().equals(Root.name())) {
+            if (parent != null) {
+                return parent.deliver(delivery.toRoot());
+            } else {
+                return deliver(delivery.toSelf());
+            }
+        } else if (children.containsKey(delivery.nextName())) {
+            return children.get(delivery.nextName()).deliver(delivery.toChild());
         }
 
         return false;
@@ -39,8 +44,12 @@ class Cell {
         return putChild(name, new Cell(this));
     }
 
-    private Cell putChild(String name, Cell child) {
+    Cell putChild(String name, Cell child) {
         children.put(Child.name(name), child);
         return child;
+    }
+
+    void setReaction(Reaction reaction) {
+        this.reaction = reaction;
     }
 }

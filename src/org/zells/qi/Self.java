@@ -7,7 +7,7 @@ public class Self extends Name {
 
     @Override
     public String toString() {
-        return ".";
+        return ":";
     }
 
     static Name name() {
