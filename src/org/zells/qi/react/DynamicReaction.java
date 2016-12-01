@@ -1,9 +1,11 @@
-package org.zells.qi;
+package org.zells.qi.react;
+
+import org.zells.qi.deliver.Delivery;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class DynamicReaction implements Reaction {
+public class DynamicReaction implements Reaction {
 
     private List<MessageSend> sends = new ArrayList<>();
 
@@ -16,7 +18,7 @@ class DynamicReaction implements Reaction {
         return resolvedSends;
     }
 
-    DynamicReaction add(MessageSend send) {
+    public DynamicReaction add(MessageSend send) {
         sends.add(send);
         return this;
     }

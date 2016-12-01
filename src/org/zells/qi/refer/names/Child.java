@@ -1,4 +1,6 @@
-package org.zells.qi;
+package org.zells.qi.refer.names;
+
+import org.zells.qi.refer.Name;
 
 public class Child extends Name {
 
@@ -8,7 +10,7 @@ public class Child extends Name {
         this.name = name;
     }
 
-    static Child name(String name) {
+    public static Child name(String name) {
         return new Child(name);
     }
 

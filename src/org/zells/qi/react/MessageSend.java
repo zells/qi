@@ -1,20 +1,24 @@
-package org.zells.qi;
+package org.zells.qi.react;
 
-class MessageSend {
+import org.zells.qi.deliver.Delivery;
+import org.zells.qi.refer.Path;
+import org.zells.qi.refer.names.Message;
+
+public class MessageSend {
 
     private final Path receiver;
     private final Path message;
 
-    MessageSend(Path receiver, Path message) {
+    public MessageSend(Path receiver, Path message) {
         this.receiver = receiver;
         this.message = message;
     }
 
-    Path getReceiver() {
+    public Path getReceiver() {
         return receiver;
     }
 
-    Path getMessage() {
+    public Path getMessage() {
         return message;
     }
 

@@ -1,11 +1,14 @@
-package org.zells.qi;
+package org.zells.qi.refer;
+
+import org.zells.qi.refer.names.Parent;
+import org.zells.qi.refer.names.Root;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class Path {
+public class Path {
 
     private final List<Name> names;
 
@@ -13,23 +16,23 @@ class Path {
         this.names = names;
     }
 
-    Path(Name... names) {
+    public Path(Name... names) {
         this.names = Arrays.asList(names);
     }
 
-    Name last() {
+    public Name last() {
         return names.get(names.size() - 1);
     }
 
-    Name first() {
+    public Name first() {
         return names.get(0);
     }
 
-    Path rest() {
+    public Path rest() {
         return new Path(names.subList(1, names.size()));
     }
 
-    Path in(Name name) {
+    public Path in(Name name) {
         return in(new Path(name));
     }
 
@@ -37,7 +40,7 @@ class Path {
         return context.with(this);
     }
 
-    Path with(Path path) {
+    public Path with(Path path) {
         Path newPath = this;
         for (Name n : path.names) {
             newPath = newPath.with(n);
@@ -45,7 +48,7 @@ class Path {
         return newPath;
     }
 
-    Path with(Name name) {
+    public Path with(Name name) {
         if (name.equals(Root.name())) {
             return new Path(name);
         }
@@ -62,11 +65,11 @@ class Path {
         return new Path(newNames);
     }
 
-    Path up() {
+    public Path up() {
         return new Path(names.subList(0, names.size() - 1));
     }
 
-    boolean isEmpty() {
+    public boolean isEmpty() {
         return names.isEmpty();
     }
 

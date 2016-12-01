@@ -1,6 +1,13 @@
 package org.zells.qi;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.zells.qi.deliver.Delivery;
+import org.zells.qi.deliver.GlobalUniqueIdentifierGenerator;
+import org.zells.qi.react.MessageSend;
+import org.zells.qi.react.Reaction;
+import org.zells.qi.refer.Name;
+import org.zells.qi.refer.Path;
+import org.zells.qi.refer.names.*;
 
 import java.util.ArrayList;
 
@@ -16,7 +23,7 @@ class Specification {
     void SetUp() {
         GlobalUniqueIdentifierGenerator.setGenerator(new GlobalUniqueIdentifierGenerator() {
             private int id = 0;
-            String next() {
+            protected String next() {
                 return (new Integer(id++)).toString();
             }
         });

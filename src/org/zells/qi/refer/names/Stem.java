@@ -1,11 +1,13 @@
-package org.zells.qi;
+package org.zells.qi.refer.names;
+
+import org.zells.qi.refer.Name;
 
 public class Stem extends Name {
 
     private Stem() {
     }
 
-    static Name name() {
+    public static Name name() {
         return new Stem();
     }
 

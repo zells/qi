@@ -1,11 +1,13 @@
-package org.zells.qi;
+package org.zells.qi.refer.names;
+
+import org.zells.qi.refer.Name;
 
 public class Root extends Name {
 
     private Root() {
     }
 
-    static Name name() {
+    public static Name name() {
         return new Root();
     }
 

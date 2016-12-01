@@ -1,13 +1,17 @@
-package org.zells.qi;
+package org.zells.qi.deliver;
 
-class Delivery {
+import org.zells.qi.refer.Name;
+import org.zells.qi.refer.Path;
+import org.zells.qi.refer.names.Parent;
+
+public class Delivery {
     private Path context;
     private Path receiver;
     private Path message;
     private Path role;
     private String guid;
 
-    Delivery(Path context, Path receiver, Path message) {
+    public Delivery(Path context, Path receiver, Path message) {
         this(context, receiver, message, context.with(receiver), GlobalUniqueIdentifierGenerator.generate());
     }
 
@@ -19,43 +23,43 @@ class Delivery {
         this.guid = guid;
     }
 
-    Path getMessage() {
+    public Path getMessage() {
         return message;
     }
 
-    boolean hasArrived() {
+    public boolean hasArrived() {
         return receiver.isEmpty();
     }
 
-    Name nextName() {
+    public Name nextName() {
         return receiver.first();
     }
 
-    Delivery send(Path receiver, Path message) {
+    public Delivery send(Path receiver, Path message) {
         return new Delivery(context, receiver, message);
     }
 
-    Delivery toStem(Path stem) {
+    public Delivery toStem(Path stem) {
         return new Delivery(context, stem.with(receiver), message, role, guid);
     }
 
-    Delivery toStemExplicit(Path stem) {
+    public Delivery toStemExplicit(Path stem) {
         return new Delivery(context, stem.with(receiver.rest()), message);
     }
 
-    Delivery toChild() {
+    public Delivery toChild() {
         return new Delivery(context.with(nextName()), receiver.rest(), message.in(Parent.name()), role, guid);
     }
 
-    Delivery toParent() {
+    public Delivery toParent() {
         return new Delivery(context.up(), receiver.rest(), message.in(context.last()), role, guid);
     }
 
-    Delivery toRoot() {
+    public Delivery toRoot() {
         return new Delivery(context.up(), receiver, message.in(context.last()), role, guid);
     }
 
-    Delivery toSelf() {
+    public Delivery toSelf() {
         return new Delivery(context, receiver.rest(), message, role, guid);
     }
 

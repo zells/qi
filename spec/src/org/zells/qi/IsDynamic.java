@@ -1,6 +1,7 @@
 package org.zells.qi;
 
 import org.junit.jupiter.api.Test;
+import org.zells.qi.react.DynamicReaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 

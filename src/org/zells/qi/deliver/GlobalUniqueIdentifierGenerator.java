@@ -1,10 +1,10 @@
-package org.zells.qi;
+package org.zells.qi.deliver;
 
-abstract class GlobalUniqueIdentifierGenerator {
+public abstract class GlobalUniqueIdentifierGenerator {
 
     private static GlobalUniqueIdentifierGenerator generator;
 
-    static void setGenerator(GlobalUniqueIdentifierGenerator generator) {
+    public static void setGenerator(GlobalUniqueIdentifierGenerator generator) {
         GlobalUniqueIdentifierGenerator.generator = generator;
     }
 
@@ -12,5 +12,5 @@ abstract class GlobalUniqueIdentifierGenerator {
         return generator.next();
     }
 
-    abstract String next();
+    protected abstract String next();
 }
