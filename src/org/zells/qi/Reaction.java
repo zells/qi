@@ -1,6 +1,8 @@
 package org.zells.qi;
 
+import java.util.List;
+
 interface Reaction {
 
-    void execute(Cell cell, Delivery delivery);
+    List<MessageSend> execute(Delivery delivery, Path frame);
 }

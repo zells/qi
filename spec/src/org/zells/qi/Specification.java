@@ -2,6 +2,9 @@ package org.zells.qi;
 
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -26,7 +29,10 @@ class Specification {
     }
 
     Reaction catchDelivery() {
-        return (Cell cell, Delivery delivery) -> delivered = delivery;
+        return (delivery, frame) -> {
+            delivered = delivery;
+            return new ArrayList<>();
+        };
     }
 
     void deliver(Cell sending, String context, String receiver, String message) {

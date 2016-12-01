@@ -126,6 +126,6 @@ public class IsDynamic extends Specification {
         assertEquals("one.foo( ^.#.1.bar)", delivered.toString());
 
         deliver(cell, "one", "", "");
-        assertEquals("one.foo( ^.#.4.bar)", delivered.toString());
+        assertEquals("one.foo( ^.#.5.bar)", delivered.toString());
     }
 }

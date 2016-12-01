@@ -8,25 +8,12 @@ class DynamicReaction implements Reaction {
     private List<MessageSend> sends = new ArrayList<>();
 
     @Override
-    public void execute(Cell cell, Delivery delivery) {
-        String frame = GlobalUniqueIdentifierGenerator.generate();
-        cell.createChild("#").createChild(frame);
-
+    public List<MessageSend> execute(Delivery delivery, Path frame) {
+        List<MessageSend> resolvedSends = new ArrayList<>(sends.size());
         for (MessageSend send : sends) {
-            cell.deliver(delivery.send(
-                    resolve(send.getReceiver(), delivery, frame),
-                    resolve(send.getMessage(), delivery, frame)));
+            resolvedSends.add(send.resolve(delivery, frame));
         }
-    }
-
-    private Path resolve(Path path, Delivery delivery, String frame) {
-        if (path.first().equals(Message.name())) {
-            return delivery.getMessage().with(path.rest());
-        } else if (path.first().equals(Frame.name())) {
-            return (new Path(Child.name("#"), Child.name(frame))).with(path.rest());
-        } else {
-            return path;
-        }
+        return resolvedSends;
     }
 
     DynamicReaction add(MessageSend send) {

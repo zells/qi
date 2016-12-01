@@ -1,9 +1,6 @@
 package org.zells.qi;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 class Cell {
 
@@ -53,8 +50,7 @@ class Cell {
                 return stem != null && deliver(delivery.toStem(stem));
             }
 
-            reaction.execute(this, delivery);
-            return true;
+            return executeReaction(delivery);
         } else if (delivery.nextName().equals(Stem.name())) {
             return stem != null && deliver(delivery.toStemExplicit(stem));
         } else if (delivery.nextName().equals(Parent.name())) {
@@ -72,5 +68,16 @@ class Cell {
         }
 
         return false;
+    }
+
+    private boolean executeReaction(Delivery delivery) {
+        String frame = GlobalUniqueIdentifierGenerator.generate();
+        createChild("#").createChild(frame);
+
+        List<MessageSend> sends = reaction.execute(delivery, new Path(Child.name("#"), Child.name(frame)));
+        for (MessageSend s : sends) {
+            deliver(delivery.send(s.getReceiver(), s.getMessage()));
+        }
+        return true;
     }
 }
