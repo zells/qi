@@ -96,7 +96,7 @@ public class IsComposable extends Specification {
         cell.setReaction(catchDelivery());
         Cell grandChild = cell.createChild("foo").createChild("bar");
 
-        deliver(grandChild, "°.foo.bar", "°", "m");
+        deliver(grandChild, "one.foo.bar", "°", "m");
         assertWasDelivered("°( foo.bar.m)");
     }
 }

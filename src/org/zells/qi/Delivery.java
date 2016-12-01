@@ -7,7 +7,7 @@ class Delivery {
     private Path role;
 
     Delivery(Path context, Path receiver, Path message) {
-        this(context, receiver, message, receiver);
+        this(context, receiver, message, context.with(receiver));
     }
 
     private Delivery(Path context, Path receiver, Path message, Path role) {
@@ -38,27 +38,19 @@ class Delivery {
     }
 
     Delivery toStemExplicit(Path stem) {
-        return new Delivery(context, stem.with(receiver.rest()), message, stem.with(role.rest()));
+        return new Delivery(context, stem.with(receiver.rest()), message);
     }
 
     Delivery toChild() {
-        Name nextContext = receiver.first();
-        Path restRole = new Path(Parent.name());
-
-        if (!role.isEmpty()) {
-            nextContext = role.first();
-            restRole = role.rest();
-        }
-
-        return new Delivery(context.with(nextContext), receiver.rest(), message.in(Parent.name()), restRole);
+        return new Delivery(context.with(nextName()), receiver.rest(), message.in(Parent.name()), role);
     }
 
     Delivery toParent() {
-        return new Delivery(context.up(), receiver.rest(), message.in(context.last()), role.in(context.last()));
+        return new Delivery(context.up(), receiver.rest(), message.in(context.last()), role);
     }
 
     Delivery toRoot() {
-        return new Delivery(context.up(), receiver, message.in(context.last()), role.in(context.last()));
+        return new Delivery(context.up(), receiver, message.in(context.last()), role);
     }
 
     Delivery toSelf() {
@@ -80,6 +72,6 @@ class Delivery {
 
     @Override
     public String toString() {
-        return context.with(role) + "(" + receiver + " " + message + ")";
+        return role + "(" + receiver + " " + message + ")";
     }
 }
