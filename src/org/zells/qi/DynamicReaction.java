@@ -8,10 +8,10 @@ class DynamicReaction implements Reaction {
     private List<MessageSend> sends = new ArrayList<>();
 
     @Override
-    public List<MessageSend> execute(Delivery delivery, Path frame) {
+    public List<MessageSend> execute(Delivery delivery) {
         List<MessageSend> resolvedSends = new ArrayList<>(sends.size());
         for (MessageSend send : sends) {
-            resolvedSends.add(send.resolve(delivery, frame));
+            resolvedSends.add(send.resolve(delivery));
         }
         return resolvedSends;
     }

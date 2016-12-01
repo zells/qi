@@ -1,6 +1,5 @@
 package org.zells.qi;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -205,20 +204,5 @@ public class IsAbstractable extends Specification {
 
         deliver(root, "r", "foo", "m");
         assertWasDelivered("r.foo( ^.^.m)");
-    }
-
-    @Test
-    @Disabled("TBD")
-    void AdoptChild() {
-    }
-
-    @Test
-    @Disabled("TBD")
-    void AdoptGrandChild() {
-    }
-
-    @Test
-    @Disabled("TBD")
-    void AdoptInheritedChild() {
     }
 }

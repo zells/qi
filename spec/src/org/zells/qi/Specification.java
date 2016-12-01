@@ -3,7 +3,6 @@ package org.zells.qi;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,7 +28,7 @@ class Specification {
     }
 
     Reaction catchDelivery() {
-        return (delivery, frame) -> {
+        return (delivery) -> {
             delivered = delivery;
             return new ArrayList<>();
         };
@@ -63,8 +62,6 @@ class Specification {
                 return Root.name();
             case "@":
                 return Message.name();
-            case "#":
-                return Frame.name();
             case "*":
                 return Stem.name();
             default:

@@ -71,10 +71,7 @@ class Cell {
     }
 
     private boolean executeReaction(Delivery delivery) {
-        String frame = GlobalUniqueIdentifierGenerator.generate();
-        createChild("#").createChild(frame);
-
-        List<MessageSend> sends = reaction.execute(delivery, new Path(Child.name("#"), Child.name(frame)));
+        List<MessageSend> sends = reaction.execute(delivery);
         for (MessageSend s : sends) {
             deliver(delivery.send(s.getReceiver(), s.getMessage()));
         }

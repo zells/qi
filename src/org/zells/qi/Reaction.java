@@ -4,5 +4,5 @@ import java.util.List;
 
 interface Reaction {
 
-    List<MessageSend> execute(Delivery delivery, Path frame);
+    List<MessageSend> execute(Delivery delivery);
 }

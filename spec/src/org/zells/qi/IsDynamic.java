@@ -1,6 +1,5 @@
 package org.zells.qi;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,53 +78,5 @@ public class IsDynamic extends Specification {
         assertTrue(wasDelivered);
         assertNotNull(delivered);
         assertEquals("one.foo.baz( ^.^.bar)", delivered.toString());
-    }
-
-    @Test
-    void SendFrame() {
-        Cell cell = new Cell();
-        cell.setReaction((new DynamicReaction())
-                .add(send("foo", "#.bar")));
-
-        cell.createChild("foo")
-            .setReaction(catchDelivery());
-
-        deliver(cell, "one", "", "");
-        assertTrue(wasDelivered);
-        assertNotNull(delivered);
-        assertEquals("one.foo( ^.#.1.bar)", delivered.toString());
-    }
-
-    @Test
-    void SendToFrame() {
-        Cell cell = new Cell();
-        cell.setReaction((new DynamicReaction())
-                .add(send("#.foo", "m")));
-
-        cell.createChild("#")
-                .createChild("1")
-                .createChild("foo")
-                .setReaction(catchDelivery());
-
-        deliver(cell, "one", "", "");
-        assertTrue(wasDelivered);
-        assertNotNull(delivered);
-        assertEquals("one.#.1.foo( ^.^.^.m)", delivered.toString());
-    }
-
-    @Test
-    void CreateUniqueFrames() {
-        Cell cell = new Cell();
-        cell.setReaction((new DynamicReaction())
-                .add(send("foo", "#.bar")));
-
-        cell.createChild("foo")
-                .setReaction(catchDelivery());
-
-        deliver(cell, "one", "", "");
-        assertEquals("one.foo( ^.#.1.bar)", delivered.toString());
-
-        deliver(cell, "one", "", "");
-        assertEquals("one.foo( ^.#.5.bar)", delivered.toString());
     }
 }
