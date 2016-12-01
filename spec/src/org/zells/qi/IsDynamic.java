@@ -93,7 +93,7 @@ public class IsDynamic extends Specification {
         deliver(cell, "one", "", "");
         assertTrue(wasDelivered);
         assertNotNull(delivered);
-        assertEquals("one.foo( ^.#.generated-frame-name.bar)", delivered.toString());
+        assertEquals("one.foo( ^.#.1.bar)", delivered.toString());
     }
 
     @Test
@@ -103,25 +103,18 @@ public class IsDynamic extends Specification {
                 .add(send("#.foo", "m")));
 
         cell.createChild("#")
-                .createChild("generated-frame-name")
+                .createChild("1")
                 .createChild("foo")
                 .setReaction(catchDelivery());
 
         deliver(cell, "one", "", "");
         assertTrue(wasDelivered);
         assertNotNull(delivered);
-        assertEquals("one.#.generated-frame-name.foo( ^.^.^.m)", delivered.toString());
+        assertEquals("one.#.1.foo( ^.^.^.m)", delivered.toString());
     }
 
     @Test
     void CreateUniqueFrames() {
-        GlobalUniqueIdentifierGenerator.setGenerator(new GlobalUniqueIdentifierGenerator() {
-            private String id = "";
-            String next() {
-                return id += "*";
-            }
-        });
-
         Cell cell = new Cell();
         cell.setReaction((new DynamicReaction())
                 .add(send("foo", "#.bar")));
@@ -130,9 +123,9 @@ public class IsDynamic extends Specification {
                 .setReaction(catchDelivery());
 
         deliver(cell, "one", "", "");
-        assertEquals("one.foo( ^.#.*.bar)", delivered.toString());
+        assertEquals("one.foo( ^.#.1.bar)", delivered.toString());
 
         deliver(cell, "one", "", "");
-        assertEquals("one.foo( ^.#.**.bar)", delivered.toString());
+        assertEquals("one.foo( ^.#.4.bar)", delivered.toString());
     }
 }

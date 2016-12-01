@@ -13,8 +13,9 @@ class Specification {
     @BeforeEach
     void SetUp() {
         GlobalUniqueIdentifierGenerator.setGenerator(new GlobalUniqueIdentifierGenerator() {
+            private int id = 0;
             String next() {
-                return "generated-frame-name";
+                return (new Integer(id++)).toString();
             }
         });
     }

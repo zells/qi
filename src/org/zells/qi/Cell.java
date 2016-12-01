@@ -1,7 +1,9 @@
 package org.zells.qi;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 class Cell {
 
@@ -9,6 +11,7 @@ class Cell {
     private Cell parent;
     private Reaction reaction;
     private Path stem;
+    private Set<Delivery> delivered = new HashSet<>();
 
     Cell() {
     }
@@ -40,6 +43,11 @@ class Cell {
     }
 
     boolean deliver(Delivery delivery) {
+        if (delivered.contains(delivery)) {
+            return false;
+        }
+        delivered.add(delivery);
+
         if (delivery.hasArrived()) {
             if (reaction == null) {
                 return stem != null && deliver(delivery.toStem(stem));

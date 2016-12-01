@@ -170,6 +170,44 @@ public class IsAbstractable extends Specification {
     }
 
     @Test
+    void SelfAsStem() {
+        Cell root = new Cell();
+        Cell foo = root.createChild("foo");
+        foo.setStem(p("^.foo"));
+
+        deliver(root, "r", "foo", "m");
+        assertFalse(wasDelivered);
+    }
+
+    @Test
+    void CircularInheritance() {
+        Cell root = new Cell();
+        Cell foo = root.createChild("foo");
+        Cell bar = root.createChild("bar");
+        Cell baz = root.createChild("baz");
+
+        foo.setStem(p("^.bar"));
+        bar.setStem(p("^.baz"));
+        baz.setStem(p("^.foo"));
+
+        deliver(root, "r", "foo", "m");
+        assertFalse(wasDelivered);
+    }
+
+    @Test
+    void ChildAsStem() {
+        Cell root = new Cell();
+        Cell foo = root.createChild("foo");
+        Cell bar = foo.createChild("bar");
+
+        foo.setStem(p("bar"));
+        bar.setReaction(catchDelivery());
+
+        deliver(root, "r", "foo", "m");
+        assertWasDelivered("r.foo( ^.^.m)");
+    }
+
+    @Test
     @Disabled("TBD")
     void AdoptChild() {
     }
@@ -182,20 +220,5 @@ public class IsAbstractable extends Specification {
     @Test
     @Disabled("TBD")
     void AdoptInheritedChild() {
-    }
-
-    @Test
-    @Disabled("TBD")
-    void ChildAsStem() {
-    }
-
-    @Test
-    @Disabled("TBD")
-    void SelfAsStem() {
-    }
-
-    @Test
-    @Disabled("TBD")
-    void CircularInheritance() {
     }
 }

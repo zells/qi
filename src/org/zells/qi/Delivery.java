@@ -5,16 +5,18 @@ class Delivery {
     private Path receiver;
     private Path message;
     private Path role;
+    private String guid;
 
     Delivery(Path context, Path receiver, Path message) {
-        this(context, receiver, message, context.with(receiver));
+        this(context, receiver, message, context.with(receiver), GlobalUniqueIdentifierGenerator.generate());
     }
 
-    private Delivery(Path context, Path receiver, Path message, Path role) {
+    private Delivery(Path context, Path receiver, Path message, Path role, String guid) {
         this.context = context;
         this.receiver = receiver;
         this.message = message;
         this.role = role;
+        this.guid = guid;
     }
 
     Path getMessage() {
@@ -34,7 +36,7 @@ class Delivery {
     }
 
     Delivery toStem(Path stem) {
-        return new Delivery(context, stem.with(receiver), message, role);
+        return new Delivery(context, stem.with(receiver), message, role, guid);
     }
 
     Delivery toStemExplicit(Path stem) {
@@ -42,19 +44,19 @@ class Delivery {
     }
 
     Delivery toChild() {
-        return new Delivery(context.with(nextName()), receiver.rest(), message.in(Parent.name()), role);
+        return new Delivery(context.with(nextName()), receiver.rest(), message.in(Parent.name()), role, guid);
     }
 
     Delivery toParent() {
-        return new Delivery(context.up(), receiver.rest(), message.in(context.last()), role);
+        return new Delivery(context.up(), receiver.rest(), message.in(context.last()), role, guid);
     }
 
     Delivery toRoot() {
-        return new Delivery(context.up(), receiver, message.in(context.last()), role);
+        return new Delivery(context.up(), receiver, message.in(context.last()), role, guid);
     }
 
     Delivery toSelf() {
-        return new Delivery(context, receiver.rest(), message, role);
+        return new Delivery(context, receiver.rest(), message, role, guid);
     }
 
     @Override
@@ -62,12 +64,14 @@ class Delivery {
         return obj instanceof Delivery
                 && context.equals(((Delivery) obj).context)
                 && receiver.equals(((Delivery)obj).receiver)
-                && message.equals(((Delivery) obj).message);
+                && message.equals(((Delivery) obj).message)
+                && role.equals(((Delivery) obj).role)
+                && guid.equals(((Delivery) obj).guid);
     }
 
     @Override
     public int hashCode() {
-        return context.hashCode() + receiver.hashCode() + message.hashCode() + role.hashCode();
+        return context.hashCode() + receiver.hashCode() + message.hashCode() + role.hashCode() + guid.hashCode();
     }
 
     @Override
