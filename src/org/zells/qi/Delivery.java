@@ -42,7 +42,15 @@ class Delivery {
     }
 
     Delivery toChild() {
-        return new Delivery(context.with(role.first()), receiver.rest(), message.in(Parent.name()), role.rest());
+        Name nextContext = receiver.first();
+        Path restRole = new Path(Parent.name());
+
+        if (!role.isEmpty()) {
+            nextContext = role.first();
+            restRole = role.rest();
+        }
+
+        return new Delivery(context.with(nextContext), receiver.rest(), message.in(Parent.name()), restRole);
     }
 
     Delivery toParent() {
@@ -72,6 +80,6 @@ class Delivery {
 
     @Override
     public String toString() {
-        return context + "(" + receiver + " " + message + ")";
+        return context.with(role) + "(" + receiver + " " + message + ")";
     }
 }

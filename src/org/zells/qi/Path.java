@@ -2,7 +2,6 @@ package org.zells.qi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,13 +46,16 @@ class Path {
     }
 
     Path with(Name name) {
+        if (name.equals(Root.name())) {
+            return new Path(name);
+        }
+        if (!isEmpty() && name.equals(Parent.name()) && !last().equals(Parent.name())) {
+            return up();
+        }
+
         List<Name> newNames = new ArrayList<>(names.size() + 1);
         for (Name n : names) {
-            if (n.equals(Parent.name()) && newNames.size() > 0 && newNames.get(newNames.size() - 1) instanceof Child) {
-                newNames = newNames.subList(0, newNames.size() - 1);
-            } else {
-                newNames.add(n);
-            }
+            newNames.add(n);
         }
         newNames.add(name);
 

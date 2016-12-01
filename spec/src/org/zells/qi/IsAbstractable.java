@@ -142,6 +142,34 @@ public class IsAbstractable extends Specification {
     }
 
     @Test
+    void InheritFromHigher() {
+        Cell root = new Cell();
+        Cell foo = root.createChild("foo");
+        Cell bar = root.createChild("bar");
+        Cell baz = foo.createChild("baz");
+
+        baz.setStem(p("^.^.bar"));
+        bar.setReaction(catchDelivery());
+
+        deliver(root, "r", "foo.baz", "m");
+        assertWasDelivered("r.foo.baz( ^.m)");
+    }
+
+    @Test
+    void InheritFromLower() {
+        Cell root = new Cell();
+        Cell foo = root.createChild("foo");
+        Cell bar = root.createChild("bar");
+        Cell baz = bar.createChild("baz");
+
+        foo.setStem(p("^.bar.baz"));
+        baz.setReaction(catchDelivery());
+
+        deliver(root, "r", "foo", "m");
+        assertWasDelivered("r.foo( ^.^.m)");
+    }
+
+    @Test
     @Disabled("TBD")
     void AdoptChild() {
     }
