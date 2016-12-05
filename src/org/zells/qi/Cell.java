@@ -20,6 +20,7 @@ public class Cell {
     private Reaction reaction;
     private Path stem;
     private Set<Delivery> delivered = new HashSet<>();
+    private Set<Peer> peers = new HashSet<>();
 
     Cell() {
     }
@@ -50,6 +51,16 @@ public class Cell {
         return child;
     }
 
+    Cell join(Peer peer) {
+        peers.add(peer);
+        return this;
+    }
+
+    Cell leave(Peer peer) {
+        peers.remove(peer);
+        return this;
+    }
+
     public boolean deliver(Delivery delivery) {
         if (delivered.contains(delivery)) {
             return false;
@@ -58,6 +69,13 @@ public class Cell {
 
         if (delivery.hasArrived()) {
             if (reaction == null) {
+                for (Peer peer : peers) {
+                    boolean delivered = peer.deliver(delivery);
+                    if (delivered) {
+                        return true;
+                    }
+                }
+
                 return stem != null && deliver(delivery.toStem(stem));
             }
 
