@@ -19,7 +19,7 @@ public class IsAbstractable extends Specification {
     void NonExistingStem() {
         Cell root = new Cell();
         Cell foo = root.createChild("foo");
-        foo.setStem(p("°.bar"));
+        foo.setStem(path("°.bar"));
 
         deliver(root, "", "", "");
         assertFalse(wasDelivered);
@@ -31,7 +31,7 @@ public class IsAbstractable extends Specification {
         Cell foo = root.createChild("foo");
         Cell bar = root.createChild("bar");
 
-        foo.setStem(p("^.bar"));
+        foo.setStem(path("^.bar"));
         bar.setReaction(catchDelivery());
 
         deliver(root, "r", "foo", "m");
@@ -44,7 +44,7 @@ public class IsAbstractable extends Specification {
         Cell foo = root.createChild("foo");
         Cell bar = root.createChild("bar");
 
-        foo.setStem(p("^.bar"));
+        foo.setStem(path("^.bar"));
         bar.setReaction(new DynamicReaction());
         foo.setReaction(catchDelivery());
 
@@ -59,8 +59,8 @@ public class IsAbstractable extends Specification {
         Cell bar = root.createChild("bar");
         Cell baz = root.createChild("baz");
 
-        foo.setStem(p("^.bar"));
-        bar.setStem(p("^.baz"));
+        foo.setStem(path("^.bar"));
+        bar.setStem(path("^.baz"));
         baz.setReaction(catchDelivery());
 
         deliver(root, "r", "foo", "m");
@@ -74,7 +74,7 @@ public class IsAbstractable extends Specification {
         Cell bar = root.createChild("bar");
         Cell baz = bar.createChild("baz");
 
-        foo.setStem(p("^.bar"));
+        foo.setStem(path("^.bar"));
         baz.setReaction(catchDelivery());
 
         deliver(root, "r", "foo.baz", "m");
@@ -89,7 +89,7 @@ public class IsAbstractable extends Specification {
         bar.createChild("baz");
         Cell newBaz = foo.createChild("baz");
 
-        foo.setStem(p("^.bar"));
+        foo.setStem(path("^.bar"));
         newBaz.setReaction(catchDelivery());
 
         deliver(root, "r", "foo.baz", "m");
@@ -104,7 +104,7 @@ public class IsAbstractable extends Specification {
         Cell baz = bar.createChild("baz");
         Cell cat = baz.createChild("cat");
 
-        foo.setStem(p("^.bar"));
+        foo.setStem(path("^.bar"));
         cat.setReaction(catchDelivery());
 
         deliver(root, "r", "foo.baz.cat", "m");
@@ -119,8 +119,8 @@ public class IsAbstractable extends Specification {
         Cell baz = root.createChild("baz");
         Cell cat = baz.createChild("cat");
 
-        foo.setStem(p("^.bar"));
-        bar.setStem(p("^.baz"));
+        foo.setStem(path("^.bar"));
+        bar.setStem(path("^.baz"));
         cat.setReaction(catchDelivery());
 
         deliver(root, "r", "foo.cat", "m");
@@ -133,7 +133,7 @@ public class IsAbstractable extends Specification {
         Cell foo = root.createChild("foo");
         Cell bar = root.createChild("bar");
 
-        foo.setStem(p("^.bar"));
+        foo.setStem(path("^.bar"));
         bar.setReaction(catchDelivery());
         foo.setReaction((new DynamicReaction()).add(send("*", "n")));
 
@@ -148,7 +148,7 @@ public class IsAbstractable extends Specification {
         Cell bar = root.createChild("bar");
         Cell baz = foo.createChild("baz");
 
-        baz.setStem(p("^.^.bar"));
+        baz.setStem(path("^.^.bar"));
         bar.setReaction(catchDelivery());
 
         deliver(root, "r", "foo.baz", "m");
@@ -162,7 +162,7 @@ public class IsAbstractable extends Specification {
         Cell bar = root.createChild("bar");
         Cell baz = bar.createChild("baz");
 
-        foo.setStem(p("^.bar.baz"));
+        foo.setStem(path("^.bar.baz"));
         baz.setReaction(catchDelivery());
 
         deliver(root, "r", "foo", "m");
@@ -173,7 +173,7 @@ public class IsAbstractable extends Specification {
     void SelfAsStem() {
         Cell root = new Cell();
         Cell foo = root.createChild("foo");
-        foo.setStem(p("^.foo"));
+        foo.setStem(path("^.foo"));
 
         deliver(root, "r", "foo", "m");
         assertFalse(wasDelivered);
@@ -186,9 +186,9 @@ public class IsAbstractable extends Specification {
         Cell bar = root.createChild("bar");
         Cell baz = root.createChild("baz");
 
-        foo.setStem(p("^.bar"));
-        bar.setStem(p("^.baz"));
-        baz.setStem(p("^.foo"));
+        foo.setStem(path("^.bar"));
+        bar.setStem(path("^.baz"));
+        baz.setStem(path("^.foo"));
 
         deliver(root, "r", "foo", "m");
         assertFalse(wasDelivered);
@@ -200,7 +200,7 @@ public class IsAbstractable extends Specification {
         Cell foo = root.createChild("foo");
         Cell bar = foo.createChild("bar");
 
-        foo.setStem(p("bar"));
+        foo.setStem(path("bar"));
         bar.setReaction(catchDelivery());
 
         deliver(root, "r", "foo", "m");

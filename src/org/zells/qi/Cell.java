@@ -1,6 +1,7 @@
 package org.zells.qi;
 
 import org.zells.qi.deliver.Delivery;
+import org.zells.qi.deliver.Messenger;
 import org.zells.qi.react.MessageSend;
 import org.zells.qi.react.Reaction;
 import org.zells.qi.refer.Name;
@@ -12,7 +13,7 @@ import org.zells.qi.refer.names.Stem;
 
 import java.util.*;
 
-class Cell {
+public class Cell {
 
     private Map<Name, Cell> children = new HashMap<>();
     private Cell parent;
@@ -44,12 +45,12 @@ class Cell {
         return putChild(name, new Cell(this));
     }
 
-    private Cell putChild(String name, Cell child) {
+    Cell putChild(String name, Cell child) {
         children.put(Child.name(name), child);
         return child;
     }
 
-    boolean deliver(Delivery delivery) {
+    public boolean deliver(Delivery delivery) {
         if (delivered.contains(delivery)) {
             return false;
         }
@@ -83,7 +84,8 @@ class Cell {
     private boolean executeReaction(Delivery delivery) {
         List<MessageSend> sends = reaction.execute(delivery);
         for (MessageSend s : sends) {
-            deliver(delivery.send(s.getReceiver(), s.getMessage()));
+            (new Messenger(this, delivery.send(s.getReceiver(), s.getMessage())))
+                    .run();
         }
         return true;
     }

@@ -30,6 +30,12 @@ class Specification {
     }
 
     void assertWasDelivered(String to) {
+        while (delivered == null) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ignored) {
+            }
+        }
         assertTrue(wasDelivered);
         assertEquals(to, delivered.toString());
     }
@@ -42,14 +48,18 @@ class Specification {
     }
 
     void deliver(Cell sending, String context, String receiver, String message) {
-        wasDelivered = sending.deliver(new Delivery(p(context), p(receiver), p(message)));
+        wasDelivered = sending.deliver(delivery(context, receiver, message));
     }
 
     MessageSend send(String receiver, String message) {
-        return new MessageSend(p(receiver), p(message));
+        return new MessageSend(path(receiver), path(message));
     }
 
-    Path p(String string) {
+    Delivery delivery(String context, String receiver, String message) {
+        return new Delivery(path(context), path(receiver), path(message));
+    }
+
+    Path path(String string) {
         Path path = new Path();
         if (string.isEmpty()) {
             return path;

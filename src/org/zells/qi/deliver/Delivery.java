@@ -23,6 +23,10 @@ public class Delivery {
         this.guid = guid;
     }
 
+    Delivery renew() {
+        return new Delivery(context, receiver, message, role, GlobalUniqueIdentifierGenerator.generate());
+    }
+
     public Path getMessage() {
         return message;
     }

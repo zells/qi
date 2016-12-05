@@ -45,9 +45,7 @@ public class IsDynamic extends Specification {
         foo.setReaction(catchDelivery());
 
         deliver(cell, "one", "", "m");
-        assertTrue(wasDelivered);
-        assertNotNull(delivered);
-        assertEquals("one.foo( ^.bar)", delivered.toString());
+        assertWasDelivered("one.foo( ^.bar)");
     }
 
     @Test
@@ -60,9 +58,7 @@ public class IsDynamic extends Specification {
         foo.setReaction(catchDelivery());
 
         deliver(cell, "one", "", "m");
-        assertTrue(wasDelivered);
-        assertNotNull(delivered);
-        assertEquals("one.foo( ^.m.baz)", delivered.toString());
+        assertWasDelivered("one.foo( ^.m.baz)");
     }
 
     @Test
@@ -76,8 +72,6 @@ public class IsDynamic extends Specification {
         baz.setReaction(catchDelivery());
 
         deliver(cell, "one", "", "foo");
-        assertTrue(wasDelivered);
-        assertNotNull(delivered);
-        assertEquals("one.foo.baz( ^.^.bar)", delivered.toString());
+        assertWasDelivered("one.foo.baz( ^.^.bar)");
     }
 }
