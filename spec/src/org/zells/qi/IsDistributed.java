@@ -1,6 +1,5 @@
 package org.zells.qi;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.deliver.Delivery;
 
@@ -11,7 +10,7 @@ public class IsDistributed extends Specification {
     @Test
     void NoPeers() {
         Cell cell = new Cell();
-        deliver(cell, "r", "foo", "m");
+        deliver(cell, "", "", "");
         assertFalse(wasDelivered);
     }
 
@@ -19,24 +18,24 @@ public class IsDistributed extends Specification {
     void DeliverToPeer() {
         Cell cell = new Cell();
         cell.join(delivery -> {
-            delivered = delivery;
+            received = delivery.getMessage();
             return true;
         });
 
-        deliver(cell, "r", "", "m");
-        assertWasDelivered("r( m)");
+        deliver(cell, "°", "", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
     void FailPeer() {
         Cell cell = new Cell();
         cell.join(delivery -> {
-            delivered = delivery;
+            received = delivery.getMessage();
             return false;
         });
 
-        deliver(cell, "r", "", "m");
-        assertNotNull(delivered);
+        deliver(cell, "°", "", "m");
+        assertNotNull(received);
         assertFalse(wasDelivered);
     }
 
@@ -54,7 +53,7 @@ public class IsDistributed extends Specification {
             return false;
         });
 
-        deliver(cell, "r", "", "m");
+        deliver(cell, "°", "", "m");
 
         assertTrue(reached[0]);
         assertTrue(reached[1]);
@@ -68,12 +67,12 @@ public class IsDistributed extends Specification {
         cell.join(peer);
         cell.join(delivery -> false);
 
-        deliver(cell, "r", "", "m");
+        deliver(cell, "°", "", "m");
         assertTrue(wasDelivered);
 
         cell.leave(peer);
 
-        deliver(cell, "r", "", "m");
+        deliver(cell, "°", "", "m");
         assertFalse(wasDelivered);
     }
 
@@ -89,9 +88,9 @@ public class IsDistributed extends Specification {
                     return true;
                 });
         cell.createChild("bar")
-                .setReaction(catchDelivery());
+                .setReaction(catchMessage());
 
-        deliver(cell, "r", "foo", "m");
+        deliver(cell, "°", "foo", "m");
         assertTrue(deliveredToPeer[0]);
     }
 }

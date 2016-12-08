@@ -1,13 +1,10 @@
 package org.zells.qi;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.deliver.Messenger;
 import org.zells.qi.react.DynamicReaction;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IsConcurrent extends Specification {
 
@@ -17,7 +14,7 @@ public class IsConcurrent extends Specification {
 
         final boolean[] failed = {false};
         Messenger messenger =
-                (new Messenger(cell, delivery("r", "foo", "m")))
+                (new Messenger(cell, delivery("", "foo", "m")))
                         .setMaxRetries(0)
                         .whenFailed(() -> failed[0] = true)
                         .run()
@@ -31,16 +28,16 @@ public class IsConcurrent extends Specification {
     @Test
     void SuccessfulDelivery() {
         Cell cell = new Cell();
-        cell.createChild("foo").setReaction(catchDelivery());
+        cell.createChild("foo").setReaction(catchMessage());
 
         Messenger messenger =
-                (new Messenger(cell, delivery("r", "foo", "m")))
+                (new Messenger(cell, delivery("°", "foo", "m")))
                         .setMaxRetries(0)
                         .run()
                         .waitForIt();
 
         assertTrue(messenger.hasDelivered());
-        assertEquals("r.foo( ^.m)", delivered.toString());
+        assertEquals("°.m", received.toString());
     }
 
 
@@ -48,42 +45,42 @@ public class IsConcurrent extends Specification {
     void RepeatDelivery() throws InterruptedException {
         Cell cell = new Cell();
         Messenger messenger =
-                (new Messenger(cell, delivery("r", "foo", "m")))
+                (new Messenger(cell, delivery("°", "foo", "m")))
                         .setMaxRetries(5)
                         .run();
 
         Thread.sleep(15);
-        cell.createChild("foo").setReaction(catchDelivery());
+        cell.createChild("foo").setReaction(catchMessage());
 
         messenger.waitForIt();
 
         assertTrue(messenger.hasDelivered());
-        assertEquals("r.foo( ^.m)", delivered.toString());
+        assertEquals("°.m", received.toString());
     }
 
     @Test
     void RepeatMessageSends() throws InterruptedException {
         Cell cell = new Cell();
         cell.setReaction((new DynamicReaction())
-                .add(send("foo", "m"))
-                .add(send("bar", "m")));
+                .add(send("foo", "a"))
+                .add(send("bar", "b")));
 
-        deliver(cell, "r", "", "");
-
-        Thread.sleep(5);
-        cell.putChild("bar", (new Cell()).setReaction(catchDelivery()));
-        waitForDeliveryTo("r.bar( ^.m)");
+        deliver(cell, "°", "", "");
 
         Thread.sleep(5);
-        cell.putChild("foo", (new Cell()).setReaction(catchDelivery()));
-        waitForDeliveryTo("r.foo( ^.m)");
+        cell.putChild("bar", (new Cell()).setReaction(catchMessage()));
+        waitForDeliveryOf("°.b");
+
+        Thread.sleep(5);
+        cell.putChild("foo", (new Cell()).setReaction(catchMessage()));
+        waitForDeliveryOf("°.a");
     }
 
-    private void waitForDeliveryTo(String to) throws InterruptedException {
-        while (delivered == null) {
+    private void waitForDeliveryOf(String to) throws InterruptedException {
+        while (received == null) {
             Thread.sleep(5);
         }
-        assertEquals(to, delivered.toString());
-        delivered = null;
+        assertEquals(to, received.toString());
+        received = null;
     }
 }

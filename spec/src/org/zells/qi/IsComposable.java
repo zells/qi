@@ -9,20 +9,20 @@ public class IsComposable extends Specification {
     @Test
     void DeliverMessage() {
         Cell cell = new Cell();
-        cell.setReaction(catchDelivery());
+        cell.setReaction(catchMessage());
 
-        deliver(cell, "one", "", "m");
-        assertWasDelivered("one( m)");
+        deliver(cell, "°", "", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
     void DeliverToChild() {
         Cell cell = new Cell();
         cell.createChild("foo")
-                .setReaction(catchDelivery());
+                .setReaction(catchMessage());
 
-        deliver(cell, "one", "foo", "m");
-        assertWasDelivered("one.foo( ^.m)");
+        deliver(cell, "°", "foo", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
@@ -47,10 +47,10 @@ public class IsComposable extends Specification {
         Cell cell = new Cell();
         cell.createChild("foo")
                 .createChild("bar")
-                .setReaction(catchDelivery());
+                .setReaction(catchMessage());
 
-        deliver(cell, "one", "foo.bar", "m");
-        assertWasDelivered("one.foo.bar( ^.^.m)");
+        deliver(cell, "°", "foo.bar", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
@@ -65,11 +65,11 @@ public class IsComposable extends Specification {
     @Test
     void DeliverToParent() {
         Cell cell = new Cell();
-        cell.setReaction(catchDelivery());
+        cell.setReaction(catchMessage());
         Cell child = cell.createChild("foo");
 
-        deliver(child, "one.foo", "^", "m");
-        assertWasDelivered("one( foo.m)");
+        deliver(child, "°.foo", "^", "m");
+        assertWasReceived("°.foo.m");
     }
 
     @Test
@@ -82,21 +82,21 @@ public class IsComposable extends Specification {
     @Test
     void DeliverToGrandParent() {
         Cell cell = new Cell();
-        cell.setReaction(catchDelivery());
+        cell.setReaction(catchMessage());
         Cell child = cell.createChild("foo");
         Cell grandChild = child.createChild("bar");
 
-        deliver(grandChild, "one.foo.bar", "^.^", "m");
-        assertWasDelivered("one( foo.bar.m)");
+        deliver(grandChild, "°.foo.bar", "^.^", "m");
+        assertWasReceived("°.foo.bar.m");
     }
 
     @Test
     void DeliverToRoot() {
         Cell cell = new Cell();
-        cell.setReaction(catchDelivery());
+        cell.setReaction(catchMessage());
         Cell grandChild = cell.createChild("foo").createChild("bar");
 
-        deliver(grandChild, "one.foo.bar", "°", "m");
-        assertWasDelivered("°( foo.bar.m)");
+        deliver(grandChild, "°.foo.bar", "°", "m");
+        assertWasReceived("°.foo.bar.m");
     }
 }

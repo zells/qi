@@ -8,23 +8,23 @@ public class Delivery {
     private Path context;
     private Path receiver;
     private Path message;
-    private Path role;
+    private Path target;
     private String guid;
 
     public Delivery(Path context, Path receiver, Path message) {
-        this(context, receiver, message, context.with(receiver), GlobalUniqueIdentifierGenerator.generate());
+        this(context, receiver, receiver, message, GlobalUniqueIdentifierGenerator.generate());
     }
 
-    private Delivery(Path context, Path receiver, Path message, Path role, String guid) {
+    private Delivery(Path context, Path target, Path receiver, Path message, String guid) {
         this.context = context;
         this.receiver = receiver;
         this.message = message;
-        this.role = role;
+        this.target = target;
         this.guid = guid;
     }
 
     Delivery renew() {
-        return new Delivery(context, receiver, message, role, GlobalUniqueIdentifierGenerator.generate());
+        return new Delivery(context, target, receiver, message, GlobalUniqueIdentifierGenerator.generate());
     }
 
     public Path getMessage() {
@@ -32,58 +32,54 @@ public class Delivery {
     }
 
     public boolean hasArrived() {
-        return receiver.isEmpty();
+        return target.isEmpty();
     }
 
     public Name nextName() {
-        return receiver.first();
+        return target.first();
     }
 
-    public Delivery send(Path receiver, Path message) {
-        return new Delivery(context, receiver, message);
+    public Delivery send(Path to, Path message) {
+        return new Delivery(context, receiver.with(to), receiver.with(message));
     }
 
     public Delivery toStem(Path stem) {
-        return new Delivery(context, stem.with(receiver), message, role, guid);
-    }
-
-    public Delivery toStemExplicit(Path stem) {
-        return new Delivery(context, stem.with(receiver.rest()), message);
+        return new Delivery(context, stem.with(target), receiver, message, guid);
     }
 
     public Delivery toChild() {
-        return new Delivery(context.with(nextName()), receiver.rest(), message.in(Parent.name()), role, guid);
+        return new Delivery(context.with(target.first()), target.rest(), receiver, message, guid);
     }
 
     public Delivery toParent() {
-        return new Delivery(context.up(), receiver.rest(), message.in(context.last()), role, guid);
+        return new Delivery(context.up(), target.rest(), receiver, message, guid);
     }
 
     public Delivery toRoot() {
-        return new Delivery(context.up(), receiver, message.in(context.last()), role, guid);
+        return new Delivery(context.up(), target, receiver, message, guid);
     }
 
     public Delivery toSelf() {
-        return new Delivery(context, receiver.rest(), message, role, guid);
+        return new Delivery(context, target.rest(), receiver, message, guid);
     }
 
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Delivery
                 && context.equals(((Delivery) obj).context)
-                && receiver.equals(((Delivery)obj).receiver)
+                && target.equals(((Delivery)obj).target)
+                && receiver.equals(((Delivery) obj).receiver)
                 && message.equals(((Delivery) obj).message)
-                && role.equals(((Delivery) obj).role)
                 && guid.equals(((Delivery) obj).guid);
     }
 
     @Override
     public int hashCode() {
-        return context.hashCode() + receiver.hashCode() + message.hashCode() + role.hashCode() + guid.hashCode();
+        return context.hashCode() + target.hashCode() + receiver.hashCode() + message.hashCode() + guid.hashCode();
     }
 
     @Override
     public String toString() {
-        return role + "(" + receiver + " " + message + ")";
+        return context + "|" + target + "(" + receiver + " " + message + ")";
     }
 }

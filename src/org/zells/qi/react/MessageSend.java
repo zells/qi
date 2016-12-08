@@ -21,16 +21,4 @@ public class MessageSend {
     public Path getMessage() {
         return message;
     }
-
-    MessageSend resolve(Delivery delivery) {
-        return new MessageSend(resolve(receiver, delivery), resolve(message, delivery));
-    }
-
-    private Path resolve(Path path, Delivery delivery) {
-        if (path.first().equals(Message.name())) {
-            return delivery.getMessage().with(path.rest());
-        } else {
-            return path;
-        }
-    }
 }

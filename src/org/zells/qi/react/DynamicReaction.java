@@ -1,6 +1,6 @@
 package org.zells.qi.react;
 
-import org.zells.qi.deliver.Delivery;
+import org.zells.qi.refer.Path;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +10,8 @@ public class DynamicReaction implements Reaction {
     private List<MessageSend> sends = new ArrayList<>();
 
     @Override
-    public List<MessageSend> execute(Delivery delivery) {
-        List<MessageSend> resolvedSends = new ArrayList<>(sends.size());
-        for (MessageSend send : sends) {
-            resolvedSends.add(send.resolve(delivery));
-        }
-        return resolvedSends;
+    public List<MessageSend> execute(Path message) {
+        return sends;
     }
 
     public DynamicReaction add(MessageSend send) {

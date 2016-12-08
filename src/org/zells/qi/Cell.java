@@ -6,10 +6,7 @@ import org.zells.qi.react.MessageSend;
 import org.zells.qi.react.Reaction;
 import org.zells.qi.refer.Name;
 import org.zells.qi.refer.Path;
-import org.zells.qi.refer.names.Child;
-import org.zells.qi.refer.names.Parent;
-import org.zells.qi.refer.names.Root;
-import org.zells.qi.refer.names.Stem;
+import org.zells.qi.refer.names.*;
 
 import java.util.*;
 
@@ -79,9 +76,7 @@ public class Cell {
                 return stem != null && deliver(delivery.toStem(stem));
             }
 
-            return executeReaction(delivery);
-        } else if (delivery.nextName().equals(Stem.name())) {
-            return stem != null && deliver(delivery.toStemExplicit(stem));
+            return receive(delivery);
         } else if (delivery.nextName().equals(Parent.name())) {
             return parent != null && parent.deliver(delivery.toParent());
         } else if (delivery.nextName().equals(Root.name())) {
@@ -99,12 +94,32 @@ public class Cell {
         return false;
     }
 
-    private boolean executeReaction(Delivery delivery) {
-        List<MessageSend> sends = reaction.execute(delivery);
-        for (MessageSend s : sends) {
-            (new Messenger(this, delivery.send(s.getReceiver(), s.getMessage())))
-                    .run();
+    private boolean receive(Delivery delivery) {
+        List<MessageSend> sends = reaction.execute(delivery.getMessage());
+
+        if (sends == null) {
+            return true;
+        }
+
+        for (MessageSend send : sends) {
+            Delivery next = delivery.send(
+                    resolve(send.getReceiver(), delivery.getMessage()),
+                    resolve(send.getMessage(), delivery.getMessage())
+            );
+            (new Messenger(this, next)).run();
         }
         return true;
+    }
+
+    private Path resolve(Path path, Path message) {
+        if (path.isEmpty()) {
+            return path;
+        } else if (path.first().equals(Message.name())) {
+            return message.with(path.rest());
+        } else if (path.first().equals(Stem.name())) {
+            return stem.with(path.rest());
+        } else {
+            return path;
+        }
     }
 }

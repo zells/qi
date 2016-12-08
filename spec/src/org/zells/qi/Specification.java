@@ -9,15 +9,14 @@ import org.zells.qi.refer.Name;
 import org.zells.qi.refer.Path;
 import org.zells.qi.refer.names.*;
 
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class Specification {
 
     boolean wasDelivered;
-    Delivery delivered;
+    Path received;
 
     @BeforeEach
     void SetUp() {
@@ -29,21 +28,25 @@ class Specification {
         });
     }
 
-    void assertWasDelivered(String to) {
-        while (delivered == null) {
+    void assertWasReceived(String to) {
+        int count = 0;
+        while (received == null) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ignored) {
             }
+            if (count++ > 10) {
+                fail("Was not received");
+            }
         }
         assertTrue(wasDelivered);
-        assertEquals(to, delivered.toString());
+        assertEquals(to, received.toString());
     }
 
-    Reaction catchDelivery() {
-        return (delivery) -> {
-            delivered = delivery;
-            return new ArrayList<>();
+    Reaction catchMessage() {
+        return (message) -> {
+            received = message;
+            return null;
         };
     }
 
@@ -56,7 +59,7 @@ class Specification {
     }
 
     Delivery delivery(String context, String receiver, String message) {
-        return new Delivery(path(context), path(receiver), path(message));
+        return new Delivery(path(context), path(context).with(path(receiver)), path(context).with(path(message)));
     }
 
     Path path(String string) {

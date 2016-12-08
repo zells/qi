@@ -32,10 +32,10 @@ public class IsAbstractable extends Specification {
         Cell bar = root.createChild("bar");
 
         foo.setStem(path("^.bar"));
-        bar.setReaction(catchDelivery());
+        bar.setReaction(catchMessage());
 
-        deliver(root, "r", "foo", "m");
-        assertWasDelivered("r.foo( ^.m)");
+        deliver(root, "°", "foo", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
@@ -46,10 +46,10 @@ public class IsAbstractable extends Specification {
 
         foo.setStem(path("^.bar"));
         bar.setReaction(new DynamicReaction());
-        foo.setReaction(catchDelivery());
+        foo.setReaction(catchMessage());
 
-        deliver(root, "r", "foo", "m");
-        assertWasDelivered("r.foo( ^.m)");
+        deliver(root, "°", "foo", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
@@ -61,10 +61,10 @@ public class IsAbstractable extends Specification {
 
         foo.setStem(path("^.bar"));
         bar.setStem(path("^.baz"));
-        baz.setReaction(catchDelivery());
+        baz.setReaction(catchMessage());
 
-        deliver(root, "r", "foo", "m");
-        assertWasDelivered("r.foo( ^.m)");
+        deliver(root, "°", "foo", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
@@ -75,10 +75,10 @@ public class IsAbstractable extends Specification {
         Cell baz = bar.createChild("baz");
 
         foo.setStem(path("^.bar"));
-        baz.setReaction(catchDelivery());
+        baz.setReaction(catchMessage());
 
-        deliver(root, "r", "foo.baz", "m");
-        assertWasDelivered("r.foo.baz( ^.^.m)");
+        deliver(root, "°", "foo.baz", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
@@ -90,10 +90,10 @@ public class IsAbstractable extends Specification {
         Cell newBaz = foo.createChild("baz");
 
         foo.setStem(path("^.bar"));
-        newBaz.setReaction(catchDelivery());
+        newBaz.setReaction(catchMessage());
 
-        deliver(root, "r", "foo.baz", "m");
-        assertWasDelivered("r.foo.baz( ^.^.m)");
+        deliver(root, "°", "foo.baz", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
@@ -105,10 +105,10 @@ public class IsAbstractable extends Specification {
         Cell cat = baz.createChild("cat");
 
         foo.setStem(path("^.bar"));
-        cat.setReaction(catchDelivery());
+        cat.setReaction(catchMessage());
 
-        deliver(root, "r", "foo.baz.cat", "m");
-        assertWasDelivered("r.foo.baz.cat( ^.^.^.m)");
+        deliver(root, "°", "foo.baz.cat", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
@@ -121,24 +121,10 @@ public class IsAbstractable extends Specification {
 
         foo.setStem(path("^.bar"));
         bar.setStem(path("^.baz"));
-        cat.setReaction(catchDelivery());
+        cat.setReaction(catchMessage());
 
-        deliver(root, "r", "foo.cat", "m");
-        assertWasDelivered("r.foo.cat( ^.^.m)");
-    }
-
-    @Test
-    void SendMessageToStem() {
-        Cell root = new Cell();
-        Cell foo = root.createChild("foo");
-        Cell bar = root.createChild("bar");
-
-        foo.setStem(path("^.bar"));
-        bar.setReaction(catchDelivery());
-        foo.setReaction((new DynamicReaction()).add(send("*", "n")));
-
-        deliver(root, "r", "foo", "m");
-        assertWasDelivered("r.bar( ^.foo.n)");
+        deliver(root, "°", "foo.cat", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
@@ -149,10 +135,10 @@ public class IsAbstractable extends Specification {
         Cell baz = foo.createChild("baz");
 
         baz.setStem(path("^.^.bar"));
-        bar.setReaction(catchDelivery());
+        bar.setReaction(catchMessage());
 
-        deliver(root, "r", "foo.baz", "m");
-        assertWasDelivered("r.foo.baz( ^.m)");
+        deliver(root, "°", "foo.baz", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
@@ -163,10 +149,10 @@ public class IsAbstractable extends Specification {
         Cell baz = bar.createChild("baz");
 
         foo.setStem(path("^.bar.baz"));
-        baz.setReaction(catchDelivery());
+        baz.setReaction(catchMessage());
 
-        deliver(root, "r", "foo", "m");
-        assertWasDelivered("r.foo( ^.^.m)");
+        deliver(root, "°", "foo", "m");
+        assertWasReceived("°.m");
     }
 
     @Test
@@ -201,9 +187,60 @@ public class IsAbstractable extends Specification {
         Cell bar = foo.createChild("bar");
 
         foo.setStem(path("bar"));
-        bar.setReaction(catchDelivery());
+        bar.setReaction(catchMessage());
 
-        deliver(root, "r", "foo", "m");
-        assertWasDelivered("r.foo( ^.^.m)");
+        deliver(root, "°", "foo", "m");
+        assertWasReceived("°.m");
+    }
+
+    @Test
+    void ResolveRelativePaths() {
+        Cell root = new Cell();
+        Cell foo = root.createChild("foo");
+        Cell bar = root.createChild("bar");
+        Cell baz = root.createChild("baz");
+
+        foo.setStem(path("^.bar"));
+        bar.setReaction((new DynamicReaction())
+                .add(send("^.baz", "cat")));
+        baz.setReaction(catchMessage());
+
+        deliver(root, "°", "foo", "m");
+
+        assertWasReceived("°.foo.cat");
+    }
+
+    @Test
+    void ResolveAbsolutePath() {
+        Cell root = new Cell();
+        Cell foo = root.createChild("foo");
+        Cell bar = root.createChild("bar");
+        Cell baz = root.createChild("baz");
+
+        foo.setStem(path("^.bar"));
+        bar.setReaction((new DynamicReaction())
+                .add(send("^.baz", "°.bar")));
+        baz.setReaction(catchMessage());
+
+        deliver(root, "°", "foo", "m");
+
+        assertWasReceived("°.bar");
+    }
+
+    @Test
+    void SendToChildOfInheritingCell() {
+        Cell root = new Cell();
+        Cell foo = root.createChild("foo");
+        Cell bar = root.createChild("bar");
+        Cell baz = foo.createChild("baz");
+
+        foo.setStem(path("^.bar"));
+        bar.setReaction((new DynamicReaction())
+                .add(send("baz", "cat")));
+        baz.setReaction(catchMessage());
+
+        deliver(root, "°", "foo", "m");
+
+        assertWasReceived("°.foo.cat");
     }
 }
