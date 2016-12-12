@@ -19,7 +19,7 @@ public class Cell {
     private Set<Delivery> delivered = new HashSet<>();
     private Set<Peer> peers = new HashSet<>();
 
-    Cell() {
+    public Cell() {
     }
 
     private Cell(Cell parent) {
@@ -31,12 +31,12 @@ public class Cell {
         return this;
     }
 
-    Cell setReaction(Reaction reaction) {
+    public Cell setReaction(Reaction reaction) {
         this.reaction = reaction;
         return this;
     }
 
-    Cell createChild(String name) {
+    public Cell createChild(String name) {
         if (children.containsKey(Child.name(name))) {
             return children.get(Child.name(name));
         }
@@ -48,12 +48,12 @@ public class Cell {
         return child;
     }
 
-    Cell join(Peer peer) {
+    public Cell join(Peer peer) {
         peers.add(peer);
         return this;
     }
 
-    Cell leave(Peer peer) {
+    public Cell leave(Peer peer) {
         peers.remove(peer);
         return this;
     }

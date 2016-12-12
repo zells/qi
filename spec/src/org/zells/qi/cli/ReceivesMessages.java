@@ -2,11 +2,13 @@ package org.zells.qi.cli;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.zells.qi.cli.fakes.FakeNode;
 import org.zells.qi.cli.fakes.FakeUser;
+import org.zells.qi.model.deliver.Delivery;
+import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Root;
+import org.zells.qi.node.fakes.FakeNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,29 +16,44 @@ public class ReceivesMessages {
 
     private FakeUser user;
     private FakeNode node;
+    private CommandLineInterface cli;
 
     @BeforeEach
     void SetUp() {
         user = new FakeUser();
         node = new FakeNode();
-        new CommandLineInterface(user, node);
+        cli = new CommandLineInterface(user, node);
     }
 
     @Test
     void EmptyMessage() {
-        node.receive(new Path());
+        deliver(new Path());
         assertEquals("", user.told);
     }
-    
+
     @Test
     void PrintMessage() {
-        node.receive(new Path(Child.name("foo")));
+        deliver(new Path(Child.name("foo")));
         assertEquals("foo", user.told);
     }
 
     @Test
     void PrintPath() {
-        node.receive(new Path(Root.name(), Child.name("foo"), Child.name("bar")));
+        deliver(new Path(Root.name(), Child.name("foo"), Child.name("bar")));
         assertEquals("°.foo.bar", user.told);
+    }
+
+    private void deliver(Path message) {
+        GlobalUniqueIdentifierGenerator.setGenerator(new GlobalUniqueIdentifierGenerator() {
+            @Override
+            protected String next() {
+                return "foo";
+            }
+        });
+        node.cell.setReaction(m -> {
+            cli.receive(m);
+            return null;
+        });
+        node.cell.deliver(new Delivery(new Path(), new Path(), message));
     }
 }

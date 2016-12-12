@@ -2,7 +2,6 @@ package org.zells.qi.model.deliver;
 
 import org.zells.qi.model.refer.Name;
 import org.zells.qi.model.refer.Path;
-import org.zells.qi.model.refer.names.Parent;
 
 public class Delivery {
     private Path context;
@@ -15,7 +14,7 @@ public class Delivery {
         this(context, receiver, receiver, message, GlobalUniqueIdentifierGenerator.generate());
     }
 
-    private Delivery(Path context, Path target, Path receiver, Path message, String guid) {
+    public Delivery(Path context, Path target, Path receiver, Path message, String guid) {
         this.context = context;
         this.receiver = receiver;
         this.message = message;
@@ -27,8 +26,24 @@ public class Delivery {
         return new Delivery(context, target, receiver, message, GlobalUniqueIdentifierGenerator.generate());
     }
 
+    public Path getContext() {
+        return context;
+    }
+
+    public Path getTarget() {
+        return target;
+    }
+
+    public Path getReceiver() {
+        return receiver;
+    }
+
     public Path getMessage() {
         return message;
+    }
+
+    public String getGuid() {
+        return guid;
     }
 
     public boolean hasArrived() {

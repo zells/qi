@@ -1,18 +1,31 @@
 package org.zells.qi.cli;
 
+import org.zells.qi.model.Cell;
 import org.zells.qi.model.react.MessageSend;
+import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.Node;
+import org.zells.qi.node.fakes.FakeChannel;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class DryRunner {
 
+    private static CommandLineInterface cli;
+
     public static void main(String[] args) {
-        new CommandLineInterface(new ConsoleUser(), new EchoNode());
+        ConsoleUser user = new ConsoleUser();
+        cli = new CommandLineInterface(user, new EchoNode());
     }
 
     private static class EchoNode extends Node {
+        EchoNode() {
+            super(new Cell(), new Path(), new FakeChannel(), connection -> {
+                throw new NotImplementedException();
+            });
+        }
+
         @Override
         public void send(MessageSend messageSend) {
-            receive(messageSend.getMessage());
+            cli.receive(messageSend.getMessage());
         }
     }
 }

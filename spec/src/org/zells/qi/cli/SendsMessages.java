@@ -2,13 +2,13 @@ package org.zells.qi.cli;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.zells.qi.cli.fakes.FakeNode;
 import org.zells.qi.cli.fakes.FakeUser;
 import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Parent;
 import org.zells.qi.model.refer.names.Root;
+import org.zells.qi.node.fakes.FakeNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

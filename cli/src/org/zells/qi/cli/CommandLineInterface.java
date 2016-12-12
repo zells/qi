@@ -1,10 +1,9 @@
 package org.zells.qi.cli;
 
-import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.Node;
 
-class CommandLineInterface implements User.InputListener, Node.MessageListener {
+class CommandLineInterface {
 
     private final User user;
     private final Node node;
@@ -15,21 +14,21 @@ class CommandLineInterface implements User.InputListener, Node.MessageListener {
         this.user = user;
         this.node = node;
 
-        user.listen(this);
-        node.waitForMessage(this);
+        user.listen(new InputListener());
     }
 
-    @Override
-    public void hears(String input) {
-        if (input.isEmpty()) {
-            return;
-        }
-
-        node.send(parser.parse(input));
-    }
-
-    @Override
-    public void receives(Path message) {
+    void receive(Path message) {
         user.tell(printer.print(message));
+    }
+
+    private class InputListener implements User.InputListener {
+        @Override
+        public void hears(String input) {
+            if (input.isEmpty()) {
+                return;
+            }
+
+            node.send(parser.parse(input));
+        }
     }
 }

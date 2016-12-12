@@ -3,7 +3,6 @@ package org.zells.qi.model.deliver;
 import org.zells.qi.model.Cell;
 
 public class Messenger {
-    private final Thread thread;
     private final Cell sender;
     private final Delivery delivery;
     private Runnable failed;
@@ -14,12 +13,9 @@ public class Messenger {
     public Messenger(Cell sender, Delivery delivery) {
         this.sender = sender;
         this.delivery = delivery;
-        thread = new Thread(this::deliver);
     }
 
     private void deliver() {
-        delivered = sender.deliver(delivery);
-
         int retries = 0;
         while (!delivered && retries < maxRetries) {
             delivered = sender.deliver(delivery.renew());
@@ -45,8 +41,13 @@ public class Messenger {
     }
 
     public Messenger run() {
-        isDelivering = true;
-        thread.start();
+        delivered = sender.deliver(delivery);
+
+        if (!delivered) {
+            isDelivering = true;
+            (new Thread(this::deliver)).start();
+        }
+
         return this;
     }
 
