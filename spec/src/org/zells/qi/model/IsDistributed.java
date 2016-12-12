@@ -1,7 +1,7 @@
-package org.zells.qi;
+package org.zells.qi.model;
 
 import org.junit.jupiter.api.Test;
-import org.zells.qi.deliver.Delivery;
+import org.zells.qi.model.deliver.Delivery;
 
 import static org.junit.jupiter.api.Assertions.*;
 

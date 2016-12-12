@@ -1,4 +1,4 @@
-package org.zells.qi;
+package org.zells.qi.model;
 
 import org.junit.jupiter.api.Test;
 

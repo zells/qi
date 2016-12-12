@@ -1,7 +1,7 @@
-package org.zells.qi.refer;
+package org.zells.qi.model.refer;
 
-import org.zells.qi.refer.names.Parent;
-import org.zells.qi.refer.names.Root;
+import org.zells.qi.model.refer.names.Parent;
+import org.zells.qi.model.refer.names.Root;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class Path {
         this.names = Arrays.asList(names);
     }
 
-    public Name last() {
+    private Name last() {
         return names.get(names.size() - 1);
     }
 
@@ -30,14 +30,6 @@ public class Path {
 
     public Path rest() {
         return new Path(names.subList(1, names.size()));
-    }
-
-    public Path in(Name name) {
-        return in(new Path(name));
-    }
-
-    private Path in(Path context) {
-        return context.with(this);
     }
 
     public Path with(Path path) {

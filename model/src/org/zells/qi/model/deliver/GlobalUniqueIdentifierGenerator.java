@@ -1,4 +1,4 @@
-package org.zells.qi.deliver;
+package org.zells.qi.model.deliver;
 
 public abstract class GlobalUniqueIdentifierGenerator {
 

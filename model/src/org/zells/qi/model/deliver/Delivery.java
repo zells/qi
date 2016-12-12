@@ -1,8 +1,8 @@
-package org.zells.qi.deliver;
+package org.zells.qi.model.deliver;
 
-import org.zells.qi.refer.Name;
-import org.zells.qi.refer.Path;
-import org.zells.qi.refer.names.Parent;
+import org.zells.qi.model.refer.Name;
+import org.zells.qi.model.refer.Path;
+import org.zells.qi.model.refer.names.Parent;
 
 public class Delivery {
     private Path context;

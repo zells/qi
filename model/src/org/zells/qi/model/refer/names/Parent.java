@@ -1,6 +1,6 @@
-package org.zells.qi.refer.names;
+package org.zells.qi.model.refer.names;
 
-import org.zells.qi.refer.Name;
+import org.zells.qi.model.refer.Name;
 
 public class Parent extends Name {
 

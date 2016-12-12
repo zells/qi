@@ -1,6 +1,6 @@
-package org.zells.qi.react;
+package org.zells.qi.model.react;
 
-import org.zells.qi.refer.Path;
+import org.zells.qi.model.refer.Path;
 
 import java.util.ArrayList;
 import java.util.List;

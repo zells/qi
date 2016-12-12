@@ -1,6 +1,6 @@
-package org.zells.qi.deliver;
+package org.zells.qi.model.deliver;
 
-import org.zells.qi.Cell;
+import org.zells.qi.model.Cell;
 
 public class Messenger {
     private final Thread thread;

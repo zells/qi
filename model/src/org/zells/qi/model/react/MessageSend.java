@@ -1,8 +1,8 @@
-package org.zells.qi.react;
+package org.zells.qi.model.react;
 
-import org.zells.qi.deliver.Delivery;
-import org.zells.qi.refer.Path;
-import org.zells.qi.refer.names.Message;
+import org.zells.qi.model.deliver.Delivery;
+import org.zells.qi.model.refer.Path;
+import org.zells.qi.model.refer.names.Message;
 
 public class MessageSend {
 

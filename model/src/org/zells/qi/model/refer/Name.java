@@ -1,4 +1,4 @@
-package org.zells.qi.refer;
+package org.zells.qi.model.refer;
 
 public abstract class Name {
 

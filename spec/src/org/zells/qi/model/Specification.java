@@ -1,13 +1,13 @@
-package org.zells.qi;
+package org.zells.qi.model;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.zells.qi.deliver.Delivery;
-import org.zells.qi.deliver.GlobalUniqueIdentifierGenerator;
-import org.zells.qi.react.MessageSend;
-import org.zells.qi.react.Reaction;
-import org.zells.qi.refer.Name;
-import org.zells.qi.refer.Path;
-import org.zells.qi.refer.names.*;
+import org.zells.qi.model.deliver.Delivery;
+import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
+import org.zells.qi.model.react.MessageSend;
+import org.zells.qi.model.react.Reaction;
+import org.zells.qi.model.refer.Name;
+import org.zells.qi.model.refer.Path;
+import org.zells.qi.model.refer.names.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
