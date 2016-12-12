@@ -1,8 +1,8 @@
 package org.zells.qi.node.fakes;
 
 import org.zells.qi.node.Channel;
-import org.zells.qi.node.OkSignal;
 import org.zells.qi.node.Signal;
+import org.zells.qi.node.signals.OkSignal;
 
 import java.util.HashSet;
 import java.util.Set;

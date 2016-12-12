@@ -5,10 +5,10 @@ import org.zells.qi.model.Peer;
 import org.zells.qi.model.deliver.Delivery;
 import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
-import org.zells.qi.node.DeliverSignal;
 import org.zells.qi.node.Node;
-import org.zells.qi.node.OkSignal;
 import org.zells.qi.node.PeerFactory;
+import org.zells.qi.node.signals.DeliverSignal;
+import org.zells.qi.node.signals.OkSignal;
 
 public class FakeNode extends Node {
 

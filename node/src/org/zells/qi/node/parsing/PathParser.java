@@ -1,4 +1,4 @@
-package org.zells.qi.node;
+package org.zells.qi.node.parsing;
 
 import org.zells.qi.model.refer.Name;
 import org.zells.qi.model.refer.Path;

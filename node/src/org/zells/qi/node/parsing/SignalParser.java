@@ -1,9 +1,14 @@
-package org.zells.qi.node;
+package org.zells.qi.node.parsing;
 
-class SignalParser {
+import org.zells.qi.node.Signal;
+import org.zells.qi.node.signals.DeliverSignal;
+import org.zells.qi.node.signals.JoinSignal;
+import org.zells.qi.node.signals.LeaveSignal;
+
+public class SignalParser {
     private PathParser path = new PathParser();
 
-    Signal parse(String signal) {
+    public Signal parse(String signal) {
         String[] parts = signal.split(" ");
 
         switch (parts[0]) {

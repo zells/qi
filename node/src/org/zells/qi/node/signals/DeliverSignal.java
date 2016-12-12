@@ -1,6 +1,7 @@
-package org.zells.qi.node;
+package org.zells.qi.node.signals;
 
 import org.zells.qi.model.refer.Path;
+import org.zells.qi.node.Signal;
 
 public class DeliverSignal implements Signal {
     private Path context;
@@ -17,23 +18,23 @@ public class DeliverSignal implements Signal {
         this.guid = guid;
     }
 
-    Path getContext() {
+    public Path getContext() {
         return context;
     }
 
-    Path getTarget() {
+    public Path getTarget() {
         return target;
     }
 
-    Path getReceiver() {
+    public Path getReceiver() {
         return receiver;
     }
 
-    Path getMessage() {
+    public Path getMessage() {
         return message;
     }
 
-    String getGuid() {
+    public String getGuid() {
         return guid;
     }
 

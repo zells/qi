@@ -2,7 +2,7 @@ package org.zells.qi.cli;
 
 import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
-import org.zells.qi.node.PathParser;
+import org.zells.qi.node.parsing.PathParser;
 
 class Parser {
 

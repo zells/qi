@@ -1,17 +1,18 @@
-package org.zells.qi.node;
+package org.zells.qi.node.signals;
 
 import org.zells.qi.model.refer.Path;
+import org.zells.qi.node.Signal;
 
-class LeaveSignal implements Signal {
+public class LeaveSignal implements Signal {
     private final Path path;
     private final String connection;
 
-    LeaveSignal(Path path, String connection) {
+    public LeaveSignal(Path path, String connection) {
         this.path = path;
         this.connection = connection;
     }
 
-    String getConnection() {
+    public String getConnection() {
         return connection;
     }
 
