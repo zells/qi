@@ -19,12 +19,18 @@ public class NodePeer implements Peer {
 
     @Override
     public boolean deliver(Delivery delivery) {
-        return channel.send(printer.print(new DeliverSignal(
-                delivery.getContext(),
-                delivery.getTarget(),
-                delivery.getReceiver(),
-                delivery.getMessage(),
-                delivery.getGuid()
-        ))) instanceof OkSignal;
+        try {
+            String response = channel.send(printer.print(new DeliverSignal(
+                    delivery.getContext(),
+                    delivery.getTarget(),
+                    delivery.getReceiver(),
+                    delivery.getMessage(),
+                    delivery.getGuid()
+            )));
+
+            return response.equals(printer.print(new OkSignal()));
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

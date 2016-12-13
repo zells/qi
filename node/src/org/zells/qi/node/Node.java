@@ -42,19 +42,19 @@ public class Node {
         ))).run();
     }
 
-    private void receive(Signal signal) {
+    private Signal receive(Signal signal) {
         if (signal instanceof DeliverSignal) {
-            receive((DeliverSignal) signal);
+            return receive((DeliverSignal) signal);
         } else if (signal instanceof JoinSignal) {
-            receive((JoinSignal) signal);
+            return receive((JoinSignal) signal);
         } else if (signal instanceof LeaveSignal) {
-            receive((LeaveSignal) signal);
+            return receive((LeaveSignal) signal);
         } else {
             throw new RuntimeException("Unknown signal: " + signal.getClass());
         }
     }
 
-    private void receive(DeliverSignal signal) {
+    private Signal receive(DeliverSignal signal) {
         boolean received = cell.deliver(new Delivery(
                 signal.getContext(),
                 signal.getTarget(),
@@ -63,34 +63,42 @@ public class Node {
                 signal.getGuid()));
 
         if (received) {
-            channel.send(printer.print(new ReceivedSignal()));
+            return new ReceivedSignal();
         } else {
-            channel.send(printer.print(new FailedSignal()));
+            return new FailedSignal();
         }
     }
 
-    private void receive(JoinSignal signal) {
+    private Signal receive(JoinSignal signal) {
         NodePeer peer = new NodePeer(printer, channels.forConnection(signal.getConnection()));
         peers.put(signal.getConnection(), peer);
         cell.join(peer);
+
+        return new OkSignal();
     }
 
-    private void receive(LeaveSignal signal) {
+    private Signal receive(LeaveSignal signal) {
         cell.leave(peers.get(signal.getConnection()));
+
+        return new OkSignal();
     }
 
     public void join(String connection) {
-        channel.send(printer.print(new JoinSignal(context, connection)));
+        channels.forConnection(connection).send(printer.print(new JoinSignal(context, channel.getConnection())));
     }
 
     public void leave(String connection) {
-        channel.send(printer.print(new LeaveSignal(context, connection)));
+        channels.forConnection(connection).send(printer.print(new LeaveSignal(context, channel.getConnection())));
+    }
+
+    void stop() {
+        channel.close();
     }
 
     private class SignalListener implements Channel.SignalListener {
         @Override
-        public void receives(String signal) {
-            receive(parser.parse(signal));
+        public String receives(String signal) {
+            return printer.print(receive(parser.parse(signal)));
         }
     }
 }

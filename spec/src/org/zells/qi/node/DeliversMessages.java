@@ -9,6 +9,7 @@ import org.zells.qi.model.react.Reaction;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Root;
+import org.zells.qi.node.fakes.FakeChannel;
 import org.zells.qi.node.fakes.FakeNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,7 +27,9 @@ public class DeliversMessages {
                 return "fizz-baz-" + i++;
             }
         });
-        node = new FakeNode(new Path(Root.name()));
+        FakeChannel.reset();
+        node = new FakeNode("fake", new Path(Root.name()));
+        channel = FakeChannel.channels.get("fake");
     }
 
     @Test
@@ -64,24 +67,25 @@ public class DeliversMessages {
         Cell bar = node.cell.createChild("bar");
         bar.setReaction(catchMessage());
 
-        node.channel.receive("DELIVER °.foo bar °.foo.bar °.baz global-unique-id");
+        channel.receive("DELIVER °.foo bar °.foo.bar °.baz global-unique-id");
 
         waitForReceived();
         assertEquals(new Path(Root.name(), Child.name("baz")), received);
-        assertEquals("RECEIVED", node.channel.sent);
+        assertEquals("RECEIVED", channel.sent);
     }
 
     @Test
     void IncomingDeliveryFails() {
-        node.channel.receive("DELIVER °.foo bar °.foo.bar °.baz global-unique-id");
+        channel.receive("DELIVER °.foo bar °.foo.bar °.baz global-unique-id");
 
         waitForReceived();
         assertEquals(null, received);
-        assertEquals("FAILED", node.channel.sent);
+        assertEquals("FAILED", channel.sent);
     }
 
     private Path received;
     private FakeNode node;
+    private FakeChannel channel;
 
     private Reaction catchMessage() {
         return message -> {

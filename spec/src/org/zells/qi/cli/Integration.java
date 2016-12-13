@@ -17,7 +17,7 @@ public class Integration {
 
     private static class EchoNode extends Node {
         EchoNode() {
-            super(new Cell(), new Path(), new FakeChannel(), connection -> new FakeChannel());
+            super(new Cell(), new Path(), new FakeChannel("echo"), FakeChannel::new);
         }
 
         @Override

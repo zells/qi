@@ -2,11 +2,15 @@ package org.zells.qi.node.connecting;
 
 public interface Channel {
 
-    Signal send(String signal);
+    String send(String signal);
 
     void listen(SignalListener listener);
 
+    void close();
+
+    String getConnection();
+
     interface SignalListener {
-        void receives(String signal);
+        String receives(String signal);
     }
 }

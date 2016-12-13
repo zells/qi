@@ -7,6 +7,7 @@ import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Root;
+import org.zells.qi.node.fakes.FakeChannel;
 import org.zells.qi.node.fakes.FakeNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,40 +23,41 @@ public class ConnectsWithPeers {
                 return "global-unique-id";
             }
         });
-        node = new FakeNode(new Path(Root.name()));
+        FakeChannel.reset();
+        node = new FakeNode("fake", new Path(Root.name()));
     }
 
     @Test
     void JoinPeer() {
-        node.join("<connecting>");
+        node.join("other");
 
-        assertEquals("JOIN ° <connecting>", node.channel.sent);
+        assertEquals("JOIN ° fake", FakeChannel.channels.get("other").sent);
     }
 
     @Test
     void LeavePeer() {
-        node.leave("<connecting>");
+        node.leave("other");
 
-        assertEquals("LEAVE ° <connecting>", node.channel.sent);
+        assertEquals("LEAVE ° fake", FakeChannel.channels.get("other").sent);
     }
 
     @Test
     void PeerJoins() {
-        node.channel.receive("JOIN °.foo <connecting>");
+        FakeChannel.channels.get("fake").receive("JOIN °.foo other");
 
         node.send(new MessageSend(new Path(), new Path(Child.name("m"))));
 
-        assertEquals("DELIVER °  ° °.m global-unique-id", node.channel.sent);
+        assertEquals("DELIVER °  ° °.m global-unique-id", FakeChannel.channels.get("other").sent);
     }
 
     @Test
     void PeerLeaves() {
-        node.channel.receive("JOIN °.foo <connecting>");
-        node.channel.receive("LEAVE °.foo <connecting>");
+        FakeChannel.channels.get("fake").receive("JOIN °.foo other");
+        FakeChannel.channels.get("fake").receive("LEAVE °.foo other");
 
         node.send(new MessageSend(new Path(), new Path(Child.name("m"))));
 
-        assertNull(node.channel.sent);
+        assertNull(FakeChannel.channels.get("other").sent);
     }
 
     private FakeNode node;

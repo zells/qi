@@ -9,24 +9,18 @@ public class FakeNode extends Node {
 
     public Cell cell;
     public MessageSend sent;
-    public FakeChannel channel;
 
     public FakeNode() {
-        this(new Path());
+        this("incoming", new Path());
     }
 
-    public FakeNode(Path context) {
-        this(new Cell(), context);
+    public FakeNode(String connection, Path context) {
+        this(connection, new Cell(), context);
     }
 
-    private FakeNode(Cell cell, Path context) {
-        this(cell, context, new FakeChannel());
-    }
-
-    private FakeNode(Cell cell, Path context, FakeChannel channel) {
-        super(cell, context, channel, connection -> channel);
+    private FakeNode(String connection, Cell cell, Path context) {
+        super(cell, context, new FakeChannel(connection), FakeChannel::new);
         this.cell = cell;
-        this.channel = channel;
     }
 
     @Override
