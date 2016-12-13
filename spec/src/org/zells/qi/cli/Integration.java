@@ -6,7 +6,7 @@ import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.Node;
 import org.zells.qi.node.fakes.FakeChannel;
 
-public class DryRunner {
+public class Integration {
 
     private static CommandLineInterface cli;
 
