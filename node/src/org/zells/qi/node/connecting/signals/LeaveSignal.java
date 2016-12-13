@@ -4,6 +4,7 @@ import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.connecting.Signal;
 
 public class LeaveSignal implements Signal {
+
     private final Path path;
     private final String connection;
 
@@ -19,5 +20,15 @@ public class LeaveSignal implements Signal {
     @Override
     public String toString() {
         return "LEAVE " + path + " " + connection;
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof LeaveSignal && toString().equals(obj.toString());
     }
 }

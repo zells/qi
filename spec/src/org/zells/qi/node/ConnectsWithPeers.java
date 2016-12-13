@@ -2,11 +2,13 @@ package org.zells.qi.node;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.zells.qi.model.Cell;
 import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
 import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Root;
+import org.zells.qi.node.connecting.signals.DeliverSignal;
 import org.zells.qi.node.connecting.signals.JoinSignal;
 import org.zells.qi.node.connecting.signals.LeaveSignal;
 import org.zells.qi.node.fakes.FakeChannel;
@@ -26,30 +28,42 @@ public class ConnectsWithPeers {
             }
         });
         FakeChannel.reset();
-        node = new FakeNode("fake", new Path(Root.name()));
+        node = new FakeNode("fake", (new Cell()).createChild("foo"), new Path(Root.name(), Child.name("foo")));
     }
 
     @Test
     void JoinPeer() {
         node.join("other");
 
-        assertEquals("JOIN ° fake", FakeChannel.channels.get("other").sent);
+        assertEquals(new JoinSignal(
+                new Path(Root.name(), Child.name("foo")),
+                "fake"
+        ), FakeChannel.channels.get("other").sent);
     }
 
     @Test
     void LeavePeer() {
         node.leave("other");
 
-        assertEquals("LEAVE ° fake", FakeChannel.channels.get("other").sent);
+        assertEquals(new LeaveSignal(
+                new Path(Root.name(), Child.name("foo")),
+                "fake"
+        ), FakeChannel.channels.get("other").sent);
     }
 
     @Test
     void PeerJoins() {
         node.server.receive(new JoinSignal(new Path(Root.name(), Child.name("foo")), "other"));
 
-        node.send(new MessageSend(new Path(), new Path(Child.name("m"))));
+        node.send(new MessageSend(new Path(Child.name("bar")), new Path(Child.name("m"))));
 
-        assertEquals("DELIVER °  ° °.m global-unique-id", FakeChannel.channels.get("other").sent);
+        assertEquals(new DeliverSignal(
+                new Path(Root.name(), Child.name("foo")),
+                new Path(Child.name("bar")),
+                new Path(Root.name(), Child.name("foo"), Child.name("bar")),
+                new Path(Root.name(), Child.name("foo"), Child.name("m")),
+                "global-unique-id"
+        ), FakeChannel.channels.get("other").sent);
     }
 
     @Test

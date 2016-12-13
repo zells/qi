@@ -2,14 +2,14 @@ package org.zells.qi.node.fakes;
 
 import org.zells.qi.node.connecting.Channel;
 import org.zells.qi.node.connecting.Signal;
-import org.zells.qi.node.connecting.signals.OkSignal;
+import org.zells.qi.node.connecting.signals.ReceivedSignal;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class FakeChannel implements Channel {
 
-    public String sent;
+    public Signal sent;
 
     public static Map<String, FakeChannel> channels = new HashMap<>();
 
@@ -19,8 +19,8 @@ public class FakeChannel implements Channel {
 
     @Override
     public Signal send(Signal signal) {
-        sent = signal.toString();
-        return new OkSignal();
+        sent = signal;
+        return new ReceivedSignal();
     }
 
     public static void reset() {

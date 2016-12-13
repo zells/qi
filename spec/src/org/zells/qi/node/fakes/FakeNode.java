@@ -12,11 +12,11 @@ public class FakeNode extends Node {
     public MessageSend sent;
 
     public FakeNode() {
-        this("incoming", new Path());
+        this("incoming", new Cell(), new Path());
     }
 
-    public FakeNode(String connection, Path context) {
-        this(new FakeServer(connection), new Cell(), context);
+    public FakeNode(String connection, Cell cell, Path context) {
+        this(new FakeServer(connection), cell, context);
     }
 
     private FakeNode(FakeServer server, Cell cell, Path context) {

@@ -4,6 +4,7 @@ import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.connecting.Signal;
 
 public class DeliverSignal implements Signal {
+
     private Path context;
     private Path target;
     private Path receiver;
@@ -41,5 +42,15 @@ public class DeliverSignal implements Signal {
     @Override
     public String toString() {
         return "DELIVER " + context + " " + target + " " + receiver + " " + message + " " + guid;
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DeliverSignal && toString().equals(obj.toString());
     }
 }

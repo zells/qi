@@ -30,7 +30,7 @@ public class DeliversMessages {
             }
         });
         FakeChannel.reset();
-        node = new FakeNode("fake", new Path(Root.name()));
+        node = new FakeNode("fake", (new Cell()).createChild("foo"), new Path(Root.name(), Child.name("foo")));
     }
 
     @Test
@@ -40,15 +40,13 @@ public class DeliversMessages {
 
         node.send(new MessageSend(new Path(Child.name("bar")), new Path(Child.name("baz"))));
 
-        waitForReceived();
-        assertEquals(new Path(Root.name(), Child.name("baz")), received);
+        assertEquals(new Path(Root.name(), Child.name("foo"), Child.name("baz")), received);
     }
 
     @Test
     void DeliveryFails() {
         node.send(new MessageSend(new Path(Child.name("bar")), new Path()));
 
-        waitForReceived();
         assertNull(received);
     }
 
@@ -60,7 +58,7 @@ public class DeliversMessages {
         bar.setReaction(catchMessage());
 
         waitForReceived();
-        assertEquals(new Path(Root.name(), Child.name("baz")), received);
+        assertEquals(new Path(Root.name(), Child.name("foo"), Child.name("baz")), received);
     }
 
     @Test
@@ -76,7 +74,6 @@ public class DeliversMessages {
                 "global-unique-id"
         ));
 
-        waitForReceived();
         assertEquals(new Path(Root.name(), Child.name("baz")), received);
         assertTrue(node.server.responded instanceof ReceivedSignal);
     }
@@ -91,7 +88,6 @@ public class DeliversMessages {
                 "global-unique-id"
         ));
 
-        waitForReceived();
         assertEquals(null, received);
         assertTrue(node.server.responded instanceof FailedSignal);
     }
