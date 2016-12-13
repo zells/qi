@@ -125,4 +125,22 @@ public class IsDistributed extends Specification {
         deliver(cell, "°", "foo", "m");
         assertTrue(deliveredToPeer[0]);
     }
+
+    @Test
+    void DeDuplicatePeers() {
+        final int[] count = {0};
+
+        Cell cell = new Cell();
+        Peer peer = delivery -> {
+            count[0]++;
+            received = delivery.getMessage();
+            return false;
+        };
+
+        cell.join(peer);
+        cell.join(peer);
+
+        deliver(cell, "°", "", "m");
+        assertEquals(1, count[0]);
+    }
 }

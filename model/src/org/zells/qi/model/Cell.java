@@ -59,14 +59,26 @@ public class Cell {
     }
 
     public boolean deliver(Delivery delivery) {
-        return !wasAlreadyDelivered(delivery)
-                && (deliverToSelf(delivery)
-                || deliverToParent(delivery)
-                || deliverToParentRoot(delivery)
-                || deliverToSelfRoot(delivery)
-                || deliverToChild(delivery)
+        if (wasAlreadyDelivered(delivery)) {
+            return false;
+        }
+
+        if (delivery.hasArrived()) {
+            return deliverToSelf(delivery)
+                    || deliverToPeer(delivery)
+                    || deliverToStem(delivery);
+        }
+
+        if (delivery.nextName() instanceof Parent) {
+            return deliverToParent(delivery);
+        } else if (delivery.nextName() instanceof Root) {
+            return deliverToSelfRoot(delivery)
+                    || deliverToParentRoot(delivery);
+        }
+
+        return deliverToChild(delivery)
                 || deliverToPeer(delivery)
-                || deliverToStem(delivery));
+                || deliverToStem(delivery);
     }
 
     private boolean wasAlreadyDelivered(Delivery delivery) {
@@ -78,34 +90,27 @@ public class Cell {
     }
 
     private boolean deliverToSelf(Delivery delivery) {
-        return delivery.hasArrived()
-                && reaction != null
+        return reaction != null
                 && receive(delivery);
     }
 
     private boolean deliverToParent(Delivery delivery) {
-        return !delivery.hasArrived()
-                && delivery.nextName() instanceof Parent
-                && parent != null
+        return parent != null
                 && parent.deliver(delivery.toParent());
     }
 
     private boolean deliverToParentRoot(Delivery delivery) {
-        return !delivery.hasArrived()
-                && delivery.nextName() instanceof Root
-                && parent != null
+        return parent != null
                 && parent.deliver(delivery.toRoot());
     }
 
     private boolean deliverToSelfRoot(Delivery delivery) {
-        return !delivery.hasArrived()
-                && delivery.nextName() instanceof Root
+        return parent == null
                 && deliver(delivery.toSelf());
     }
 
     private boolean deliverToChild(Delivery delivery) {
-        return !delivery.hasArrived()
-                && children.containsKey(delivery.nextName())
+        return children.containsKey(delivery.nextName())
                 && children.get(delivery.nextName()).deliver(delivery.toChild());
     }
 
