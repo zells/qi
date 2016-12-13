@@ -1,11 +1,13 @@
 package org.zells.qi.model;
 
 import org.junit.jupiter.api.Test;
-import org.zells.qi.model.deliver.Delivery;
+import org.zells.qi.model.refer.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class IsDistributed extends Specification {
+
+    private Path target;
 
     @Test
     void NoPeers() {
@@ -15,7 +17,7 @@ public class IsDistributed extends Specification {
     }
 
     @Test
-    void DeliverToPeer() {
+    void DeliverSelfToPeer() {
         Cell cell = new Cell();
         cell.join(delivery -> {
             received = delivery.getMessage();
@@ -24,6 +26,36 @@ public class IsDistributed extends Specification {
 
         deliver(cell, "°", "", "m");
         assertWasReceived("°.m");
+    }
+
+    @Test
+    void DeliverChildToPeer() {
+        Cell cell = new Cell();
+        cell.join(delivery -> {
+            received = delivery.getMessage();
+            target = delivery.getTarget();
+            return true;
+        });
+
+        deliver(cell, "°", "foo", "m");
+
+        assertWasReceived("°.m");
+        assertEquals(path("foo"), target);
+    }
+
+    @Test
+    void DeliverGrandchildToPeer() {
+        Cell cell = new Cell();
+        cell.join(delivery -> {
+            received = delivery.getMessage();
+            target = delivery.getTarget();
+            return true;
+        });
+
+        deliver(cell, "°", "foo.bar", "m");
+
+        assertWasReceived("°.m");
+        assertEquals(path("foo.bar"), target);
     }
 
     @Test

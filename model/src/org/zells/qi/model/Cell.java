@@ -59,38 +59,67 @@ public class Cell {
     }
 
     public boolean deliver(Delivery delivery) {
+        return !wasAlreadyDelivered(delivery)
+                && (deliverToSelf(delivery)
+                || deliverToParent(delivery)
+                || deliverToParentRoot(delivery)
+                || deliverToSelfRoot(delivery)
+                || deliverToChild(delivery)
+                || deliverToPeer(delivery)
+                || deliverToStem(delivery));
+    }
+
+    private boolean wasAlreadyDelivered(Delivery delivery) {
         if (delivered.contains(delivery)) {
-            return false;
+            return true;
         }
         delivered.add(delivery);
+        return false;
+    }
 
-        if (delivery.hasArrived()) {
-            if (reaction == null) {
-                for (Peer peer : peers) {
-                    boolean delivered = peer.deliver(delivery);
-                    if (delivered) {
-                        return true;
-                    }
-                }
+    private boolean deliverToSelf(Delivery delivery) {
+        return delivery.hasArrived()
+                && reaction != null
+                && receive(delivery);
+    }
 
-                return stem != null && deliver(delivery.toStem(stem));
+    private boolean deliverToParent(Delivery delivery) {
+        return !delivery.hasArrived()
+                && delivery.nextName() instanceof Parent
+                && parent != null
+                && parent.deliver(delivery.toParent());
+    }
+
+    private boolean deliverToParentRoot(Delivery delivery) {
+        return !delivery.hasArrived()
+                && delivery.nextName() instanceof Root
+                && parent != null
+                && parent.deliver(delivery.toRoot());
+    }
+
+    private boolean deliverToSelfRoot(Delivery delivery) {
+        return !delivery.hasArrived()
+                && delivery.nextName() instanceof Root
+                && deliver(delivery.toSelf());
+    }
+
+    private boolean deliverToChild(Delivery delivery) {
+        return !delivery.hasArrived()
+                && children.containsKey(delivery.nextName())
+                && children.get(delivery.nextName()).deliver(delivery.toChild());
+    }
+
+    private boolean deliverToStem(Delivery delivery) {
+        return stem != null
+                && deliver(delivery.toStem(stem));
+    }
+
+    private boolean deliverToPeer(Delivery delivery) {
+        for (Peer peer : peers) {
+            if (peer.deliver(delivery)) {
+                return true;
             }
-
-            return receive(delivery);
-        } else if (delivery.nextName().equals(Parent.name())) {
-            return parent != null && parent.deliver(delivery.toParent());
-        } else if (delivery.nextName().equals(Root.name())) {
-            if (parent != null) {
-                return parent.deliver(delivery.toRoot());
-            } else {
-                return deliver(delivery.toSelf());
-            }
-        } else if (children.containsKey(delivery.nextName())) {
-            return children.get(delivery.nextName()).deliver(delivery.toChild());
-        } else if (stem != null) {
-            return deliver(delivery.toStem(stem));
         }
-
         return false;
     }
 
