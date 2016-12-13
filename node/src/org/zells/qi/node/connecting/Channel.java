@@ -1,4 +1,4 @@
-package org.zells.qi.node;
+package org.zells.qi.node.connecting;
 
 public interface Channel {
 

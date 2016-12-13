@@ -1,9 +1,9 @@
 package org.zells.qi.node.parsing;
 
-import org.zells.qi.node.Signal;
-import org.zells.qi.node.signals.DeliverSignal;
-import org.zells.qi.node.signals.JoinSignal;
-import org.zells.qi.node.signals.LeaveSignal;
+import org.zells.qi.node.connecting.Signal;
+import org.zells.qi.node.connecting.signals.DeliverSignal;
+import org.zells.qi.node.connecting.signals.JoinSignal;
+import org.zells.qi.node.connecting.signals.LeaveSignal;
 
 public class SignalParser {
     private PathParser path = new PathParser();

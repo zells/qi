@@ -1,7 +1,7 @@
-package org.zells.qi.node.signals;
+package org.zells.qi.node.connecting.signals;
 
 import org.zells.qi.model.refer.Path;
-import org.zells.qi.node.Signal;
+import org.zells.qi.node.connecting.Signal;
 
 public class LeaveSignal implements Signal {
     private final Path path;

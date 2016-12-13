@@ -5,14 +5,17 @@ import org.zells.qi.model.deliver.Delivery;
 import org.zells.qi.model.deliver.Messenger;
 import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
+import org.zells.qi.node.connecting.Channel;
+import org.zells.qi.node.connecting.ChannelFactory;
+import org.zells.qi.node.connecting.Signal;
+import org.zells.qi.node.connecting.signals.*;
 import org.zells.qi.node.parsing.SignalParser;
 import org.zells.qi.node.parsing.SignalPrinter;
-import org.zells.qi.node.signals.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Node {
+public class Node {
 
     private final Cell cell;
     private final Path context;

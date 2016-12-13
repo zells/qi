@@ -1,6 +1,6 @@
-package org.zells.qi.node.signals;
+package org.zells.qi.node.connecting.signals;
 
-import org.zells.qi.node.Signal;
+import org.zells.qi.node.connecting.Signal;
 
 public class FailedSignal implements Signal {
 

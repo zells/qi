@@ -27,21 +27,21 @@ public class ConnectsWithPeers {
 
     @Test
     void JoinPeer() {
-        node.join("<connection>");
+        node.join("<connecting>");
 
-        assertEquals("JOIN ° <connection>", node.channel.sent);
+        assertEquals("JOIN ° <connecting>", node.channel.sent);
     }
 
     @Test
     void LeavePeer() {
-        node.leave("<connection>");
+        node.leave("<connecting>");
 
-        assertEquals("LEAVE ° <connection>", node.channel.sent);
+        assertEquals("LEAVE ° <connecting>", node.channel.sent);
     }
 
     @Test
     void PeerJoins() {
-        node.channel.receive("JOIN °.foo <connection>");
+        node.channel.receive("JOIN °.foo <connecting>");
 
         node.send(new MessageSend(new Path(), new Path(Child.name("m"))));
 
@@ -50,8 +50,8 @@ public class ConnectsWithPeers {
 
     @Test
     void PeerLeaves() {
-        node.channel.receive("JOIN °.foo <connection>");
-        node.channel.receive("LEAVE °.foo <connection>");
+        node.channel.receive("JOIN °.foo <connecting>");
+        node.channel.receive("LEAVE °.foo <connecting>");
 
         node.send(new MessageSend(new Path(), new Path(Child.name("m"))));
 

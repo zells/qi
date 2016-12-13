@@ -2,9 +2,10 @@ package org.zells.qi.node;
 
 import org.zells.qi.model.Peer;
 import org.zells.qi.model.deliver.Delivery;
+import org.zells.qi.node.connecting.Channel;
+import org.zells.qi.node.connecting.signals.DeliverSignal;
+import org.zells.qi.node.connecting.signals.OkSignal;
 import org.zells.qi.node.parsing.SignalPrinter;
-import org.zells.qi.node.signals.DeliverSignal;
-import org.zells.qi.node.signals.OkSignal;
 
 public class NodePeer implements Peer {
 
