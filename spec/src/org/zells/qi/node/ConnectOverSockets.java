@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ConnectOverSockets {
 
     private Path received;
+    private int count = 0;
 
     @Test
     void SendMessage() throws InterruptedException {
@@ -35,6 +36,7 @@ public class ConnectOverSockets {
 
         Cell rootTwo = new Cell();
         rootTwo.setReaction(message -> {
+            count++;
             received = message;
             return null;
         });
@@ -50,13 +52,12 @@ public class ConnectOverSockets {
 
         one.send(new MessageSend(new Path(), new Path(Child.name("message"))));
 
-        for (int i=0; i<20 && received == null; i++) {
-            Thread.sleep(20);
-        }
+        Thread.sleep(50);
 
         one.stop();
         two.stop();
 
         assertEquals(new Path(Root.name(), Child.name("message")), received);
+        assertEquals(1, count);
     }
 }

@@ -20,7 +20,7 @@ public class Path {
         this.names = Arrays.asList(names);
     }
 
-    private Name last() {
+    public Name last() {
         return names.get(names.size() - 1);
     }
 

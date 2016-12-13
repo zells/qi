@@ -4,6 +4,7 @@ import org.zells.qi.node.connecting.Signal;
 import org.zells.qi.node.connecting.signals.DeliverSignal;
 import org.zells.qi.node.connecting.signals.JoinSignal;
 import org.zells.qi.node.connecting.signals.LeaveSignal;
+import org.zells.qi.node.connecting.signals.ReceivedSignal;
 
 public class SignalParser {
 
@@ -30,6 +31,8 @@ public class SignalParser {
                         path.parse(parts[1]),
                         parts[2]
                 );
+            case "RECEIVED":
+                return new ReceivedSignal();
             default:
                 throw new RuntimeException("Cannot parse signal: " + signal);
         }

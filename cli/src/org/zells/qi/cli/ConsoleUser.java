@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 
 public class ConsoleUser extends User implements Runnable {
 
-    ConsoleUser() {
+    public ConsoleUser() {
         (new Thread(this)).start();
     }
 

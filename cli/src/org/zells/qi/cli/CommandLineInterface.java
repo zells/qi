@@ -3,14 +3,14 @@ package org.zells.qi.cli;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.Node;
 
-class CommandLineInterface {
+public class CommandLineInterface {
 
     private final User user;
     private final Node node;
     private final Parser parser = new Parser();
     private final Printer printer = new Printer();
 
-    CommandLineInterface(User user, Node node) {
+    public CommandLineInterface(User user, Node node) {
         this.user = user;
         this.node = node;
 

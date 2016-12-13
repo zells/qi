@@ -11,7 +11,7 @@ public class NodePeer implements Peer {
 
     private final Channel channel;
 
-    NodePeer(Channel channel) {
+    public NodePeer(Channel channel) {
         this.channel = channel;
     }
 
