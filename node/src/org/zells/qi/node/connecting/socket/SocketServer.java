@@ -1,6 +1,9 @@
 package org.zells.qi.node.connecting.socket;
 
-import org.zells.qi.node.connecting.Channel;
+import org.zells.qi.node.connecting.Server;
+import org.zells.qi.node.connecting.Signal;
+import org.zells.qi.node.parsing.SignalParser;
+import org.zells.qi.node.parsing.SignalPrinter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,18 +12,23 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class IncomingSocketChannel implements Channel {
+public class SocketServer implements Server {
 
     private final String host;
     private final int port;
     private boolean running;
-    private final ServerSocket server;
-    private SignalListener listener;
+    private ServerSocket server;
 
-    public IncomingSocketChannel(String host, int port) {
+    private final SignalParser parser = new SignalParser();
+    private final SignalPrinter printer = new SignalPrinter();
+
+    public SocketServer(String host, int port) {
         this.host = host;
         this.port = port;
+    }
 
+    @Override
+    public void start(SignalListener listener) {
         try {
             server = new ServerSocket(port);
             running = true;
@@ -33,11 +41,11 @@ public class IncomingSocketChannel implements Channel {
                         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-                        String signal = in.readLine();
+                        Signal signal = parser.parse(in.readLine());
 
-                        String response = listener.receives(signal);
+                        Signal response = listener.receives(signal);
 
-                        out.println(response);
+                        out.println(printer.print(response));
 
                         in.close();
                         out.close();
@@ -55,18 +63,13 @@ public class IncomingSocketChannel implements Channel {
     }
 
     @Override
-    public String send(String signal) {
-        throw new RuntimeException("Cannot send on an incoming channel");
-    }
-
-    @Override
-    public void listen(SignalListener listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public void close() {
+    public void stop() {
         running = false;
+
+        if (server == null) {
+            return;
+        }
+
         try {
             server.close();
         } catch (IOException ignored) {

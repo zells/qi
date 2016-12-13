@@ -9,11 +9,13 @@ import org.zells.qi.model.react.Reaction;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Root;
+import org.zells.qi.node.connecting.signals.DeliverSignal;
+import org.zells.qi.node.connecting.signals.FailedSignal;
+import org.zells.qi.node.connecting.signals.ReceivedSignal;
 import org.zells.qi.node.fakes.FakeChannel;
 import org.zells.qi.node.fakes.FakeNode;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DeliversMessages {
 
@@ -29,7 +31,6 @@ public class DeliversMessages {
         });
         FakeChannel.reset();
         node = new FakeNode("fake", new Path(Root.name()));
-        channel = FakeChannel.channels.get("fake");
     }
 
     @Test
@@ -67,25 +68,36 @@ public class DeliversMessages {
         Cell bar = node.cell.createChild("bar");
         bar.setReaction(catchMessage());
 
-        channel.receive("DELIVER °.foo bar °.foo.bar °.baz global-unique-id");
+        node.server.receive(new DeliverSignal(
+                new Path(Root.name(), Child.name("foo")),
+                new Path(Child.name("bar")),
+                new Path(Root.name(), Child.name("foo"), Child.name("bar")),
+                new Path(Root.name(), Child.name("baz")),
+                "global-unique-id"
+        ));
 
         waitForReceived();
         assertEquals(new Path(Root.name(), Child.name("baz")), received);
-        assertEquals("RECEIVED", channel.sent);
+        assertTrue(node.server.responded instanceof ReceivedSignal);
     }
 
     @Test
     void IncomingDeliveryFails() {
-        channel.receive("DELIVER °.foo bar °.foo.bar °.baz global-unique-id");
+        node.server.receive(new DeliverSignal(
+                new Path(Root.name(), Child.name("foo")),
+                new Path(Child.name("bar")),
+                new Path(Root.name(), Child.name("foo"), Child.name("bar")),
+                new Path(Root.name(), Child.name("baz")),
+                "global-unique-id"
+        ));
 
         waitForReceived();
         assertEquals(null, received);
-        assertEquals("FAILED", channel.sent);
+        assertTrue(node.server.responded instanceof FailedSignal);
     }
 
     private Path received;
     private FakeNode node;
-    private FakeChannel channel;
 
     private Reaction catchMessage() {
         return message -> {

@@ -8,7 +8,7 @@ import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Root;
 import org.zells.qi.node.connecting.DefaultChannelFactory;
-import org.zells.qi.node.connecting.socket.IncomingSocketChannel;
+import org.zells.qi.node.connecting.socket.SocketServer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,7 +30,7 @@ public class ConnectOverSockets {
         Node one = new Node(
                 new Cell(),
                 new Path(Root.name()),
-                new IncomingSocketChannel("localhost", 42421),
+                new SocketServer("localhost", 42421),
                 new DefaultChannelFactory());
 
         Cell rootTwo = new Cell();
@@ -42,7 +42,7 @@ public class ConnectOverSockets {
         Node two = new Node(
                 rootTwo,
                 new Path(Root.name()),
-                new IncomingSocketChannel("localhost", 42422),
+                new SocketServer("localhost", 42422),
                 new DefaultChannelFactory()
         );
 

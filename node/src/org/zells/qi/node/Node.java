@@ -5,12 +5,10 @@ import org.zells.qi.model.deliver.Delivery;
 import org.zells.qi.model.deliver.Messenger;
 import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
-import org.zells.qi.node.connecting.Channel;
 import org.zells.qi.node.connecting.ChannelFactory;
+import org.zells.qi.node.connecting.Server;
 import org.zells.qi.node.connecting.Signal;
 import org.zells.qi.node.connecting.signals.*;
-import org.zells.qi.node.parsing.SignalParser;
-import org.zells.qi.node.parsing.SignalPrinter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,19 +17,17 @@ public class Node {
 
     private final Cell cell;
     private final Path context;
-    private final Channel channel;
-    private final SignalPrinter printer = new SignalPrinter();
-    private final SignalParser parser = new SignalParser();
+    private final Server server;
     private Map<String, NodePeer> peers = new HashMap<>();
     private ChannelFactory channels;
 
-    public Node(Cell cell, Path context, Channel channel, ChannelFactory channels) {
+    public Node(Cell cell, Path context, Server server, ChannelFactory channels) {
         this.cell = cell;
         this.context = context;
-        this.channel = channel;
+        this.server = server;
         this.channels = channels;
 
-        channel.listen(new SignalListener());
+        server.start(new SignalListener());
     }
 
     public void send(MessageSend send) {
@@ -70,7 +66,7 @@ public class Node {
     }
 
     private Signal receive(JoinSignal signal) {
-        NodePeer peer = new NodePeer(printer, channels.forConnection(signal.getConnection()));
+        NodePeer peer = new NodePeer(channels.forConnection(signal.getConnection()));
         peers.put(signal.getConnection(), peer);
         cell.join(peer);
 
@@ -84,21 +80,21 @@ public class Node {
     }
 
     public void join(String connection) {
-        channels.forConnection(connection).send(printer.print(new JoinSignal(context, channel.getConnection())));
+        channels.forConnection(connection).send(new JoinSignal(context, server.getConnection()));
     }
 
     public void leave(String connection) {
-        channels.forConnection(connection).send(printer.print(new LeaveSignal(context, channel.getConnection())));
+        channels.forConnection(connection).send(new LeaveSignal(context, server.getConnection()));
     }
 
     void stop() {
-        channel.close();
+        server.stop();
     }
 
-    private class SignalListener implements Channel.SignalListener {
+    private class SignalListener implements Server.SignalListener {
         @Override
-        public String receives(String signal) {
-            return printer.print(receive(parser.parse(signal)));
+        public Signal receives(Signal signal) {
+            return receive(signal);
         }
     }
 }

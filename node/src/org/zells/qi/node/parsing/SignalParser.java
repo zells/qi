@@ -6,6 +6,7 @@ import org.zells.qi.node.connecting.signals.JoinSignal;
 import org.zells.qi.node.connecting.signals.LeaveSignal;
 
 public class SignalParser {
+
     private PathParser path = new PathParser();
 
     public Signal parse(String signal) {

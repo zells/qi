@@ -8,6 +8,7 @@ import org.zells.qi.node.Node;
 public class FakeNode extends Node {
 
     public Cell cell;
+    public FakeServer server;
     public MessageSend sent;
 
     public FakeNode() {
@@ -15,11 +16,12 @@ public class FakeNode extends Node {
     }
 
     public FakeNode(String connection, Path context) {
-        this(connection, new Cell(), context);
+        this(new FakeServer(connection), new Cell(), context);
     }
 
-    private FakeNode(String connection, Cell cell, Path context) {
-        super(cell, context, new FakeChannel(connection), FakeChannel::new);
+    private FakeNode(FakeServer server, Cell cell, Path context) {
+        super(cell, context, server, FakeChannel::new);
+        this.server = server;
         this.cell = cell;
     }
 

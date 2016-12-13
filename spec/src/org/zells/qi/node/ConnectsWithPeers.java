@@ -7,6 +7,8 @@ import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Root;
+import org.zells.qi.node.connecting.signals.JoinSignal;
+import org.zells.qi.node.connecting.signals.LeaveSignal;
 import org.zells.qi.node.fakes.FakeChannel;
 import org.zells.qi.node.fakes.FakeNode;
 
@@ -43,7 +45,7 @@ public class ConnectsWithPeers {
 
     @Test
     void PeerJoins() {
-        FakeChannel.channels.get("fake").receive("JOIN °.foo other");
+        node.server.receive(new JoinSignal(new Path(Root.name(), Child.name("foo")), "other"));
 
         node.send(new MessageSend(new Path(), new Path(Child.name("m"))));
 
@@ -52,8 +54,8 @@ public class ConnectsWithPeers {
 
     @Test
     void PeerLeaves() {
-        FakeChannel.channels.get("fake").receive("JOIN °.foo other");
-        FakeChannel.channels.get("fake").receive("LEAVE °.foo other");
+        node.server.receive(new JoinSignal(new Path(Root.name(), Child.name("foo")), "other"));
+        node.server.receive(new LeaveSignal(new Path(Root.name(), Child.name("foo")), "other"));
 
         node.send(new MessageSend(new Path(), new Path(Child.name("m"))));
 

@@ -5,6 +5,7 @@ import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.Node;
 import org.zells.qi.node.fakes.FakeChannel;
+import org.zells.qi.node.fakes.FakeServer;
 
 public class Integration {
 
@@ -17,7 +18,7 @@ public class Integration {
 
     private static class EchoNode extends Node {
         EchoNode() {
-            super(new Cell(), new Path(), new FakeChannel("echo"), FakeChannel::new);
+            super(new Cell(), new Path(), new FakeServer("echo"), FakeChannel::new);
         }
 
         @Override
