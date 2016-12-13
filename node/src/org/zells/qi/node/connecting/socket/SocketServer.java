@@ -42,8 +42,9 @@ public class SocketServer implements Server {
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                         Signal signal = parser.parse(in.readLine());
-
+                        System.err.println(port + " <<< " + signal);
                         Signal response = listener.receives(signal);
+                        System.err.println(port + " >>> " + response);
 
                         out.println(printer.print(response));
 

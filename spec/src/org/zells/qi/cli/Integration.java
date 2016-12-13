@@ -22,7 +22,7 @@ public class Integration {
         }
 
         @Override
-        public void send(MessageSend messageSend) {
+        public void send(MessageSend messageSend, Runnable onFail) {
             cli.receive(messageSend.getMessage());
         }
     }

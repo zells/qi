@@ -28,7 +28,8 @@ public class CommandLineInterface {
                 return;
             }
 
-            node.send(parser.parse(input));
+            node.send(parser.parse(input),
+                    () -> user.tell("## Failed to deliver " + input));
         }
     }
 }

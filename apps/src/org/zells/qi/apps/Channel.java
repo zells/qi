@@ -12,13 +12,13 @@ import org.zells.qi.node.connecting.socket.SocketServer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class Channel {
 
-    private static List<Path> subscribers = new ArrayList<>();
+    private static Set<Path> subscribers = new HashSet<>();
 
     public static void main(String[] args) throws Exception {
         GlobalUniqueIdentifierGenerator.setGenerator(new GlobalUniqueIdentifierGenerator() {
@@ -40,7 +40,8 @@ public class Channel {
         Cell cell = root.createChild(Integer.toString(port));
         cell.setReaction(message -> {
             for (Path receiver : subscribers) {
-                node.send(new MessageSend(receiver, message));
+                node.send(new MessageSend(receiver, message),
+                        () -> System.out.println("Failed to deliver " + receiver + " <- " + message));
             }
             return null;
         });

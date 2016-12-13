@@ -26,8 +26,8 @@ public class FakeNode extends Node {
     }
 
     @Override
-    public void send(MessageSend send) {
-        super.send(send);
+    public void send(MessageSend send, Runnable onFailed) {
+        super.send(send, onFailed);
         sent = send;
     }
 }

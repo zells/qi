@@ -1,10 +1,7 @@
 package org.zells.qi.node.parsing;
 
 import org.zells.qi.node.connecting.Signal;
-import org.zells.qi.node.connecting.signals.DeliverSignal;
-import org.zells.qi.node.connecting.signals.JoinSignal;
-import org.zells.qi.node.connecting.signals.LeaveSignal;
-import org.zells.qi.node.connecting.signals.ReceivedSignal;
+import org.zells.qi.node.connecting.signals.*;
 
 public class SignalParser {
 
@@ -33,6 +30,10 @@ public class SignalParser {
                 );
             case "RECEIVED":
                 return new ReceivedSignal();
+            case "OK":
+                return new OkSignal();
+            case "FAILED":
+                return new FailedSignal(parts[1]);
             default:
                 throw new RuntimeException("Cannot parse signal: " + signal);
         }

@@ -31,11 +31,15 @@ public class Node {
     }
 
     public void send(MessageSend send) {
+        send(send, () -> {});
+    }
+
+    public void send(MessageSend send, Runnable onFailed) {
         (new Messenger(cell, new Delivery(
                 context,
                 context.with(send.getReceiver()),
                 context.with(send.getMessage())
-        ))).run();
+        ))).whenFailed(onFailed).run();
     }
 
     private Signal receive(Signal signal) {

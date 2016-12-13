@@ -32,8 +32,10 @@ public class SocketChannel implements Channel {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+            System.err.println(port + " >>> " + signal);
             out.println(printer.print(signal));
             Signal response = parser.parse(in.readLine());
+            System.err.println(port + " <<< " + response);
 
             out.close();
             in.close();
@@ -41,6 +43,7 @@ public class SocketChannel implements Channel {
 
             return response;
         } catch (Exception e) {
+            e.printStackTrace();
             return new FailedSignal(e.getMessage());
         }
     }

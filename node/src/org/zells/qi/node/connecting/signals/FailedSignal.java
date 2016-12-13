@@ -4,7 +4,7 @@ import org.zells.qi.node.connecting.Signal;
 
 public class FailedSignal implements Signal {
 
-    private String reason;
+    private String reason = "Unspecified";
 
     public FailedSignal() {
     }
@@ -15,10 +15,6 @@ public class FailedSignal implements Signal {
 
     @Override
     public String toString() {
-        if (reason == null) {
-            return "FAILED";
-        }
-
         return "FAILED " + reason;
     }
 }
