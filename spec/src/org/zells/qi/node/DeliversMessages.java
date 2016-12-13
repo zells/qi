@@ -40,6 +40,7 @@ public class DeliversMessages {
 
         node.send(new MessageSend(new Path(Child.name("bar")), new Path(Child.name("baz"))));
 
+        waitForReceived();
         assertEquals(new Path(Root.name(), Child.name("foo"), Child.name("baz")), received);
     }
 

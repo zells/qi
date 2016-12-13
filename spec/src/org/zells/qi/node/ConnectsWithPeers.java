@@ -52,10 +52,14 @@ public class ConnectsWithPeers {
     }
 
     @Test
-    void PeerJoins() {
+    void PeerJoins() throws InterruptedException {
         node.server.receive(new JoinSignal(new Path(Root.name(), Child.name("foo")), "other"));
 
         node.send(new MessageSend(new Path(Child.name("bar")), new Path(Child.name("m"))));
+
+        while (FakeChannel.channels.get("other").sent == null) {
+            Thread.sleep(10);
+        }
 
         assertEquals(new DeliverSignal(
                 new Path(Root.name(), Child.name("foo")),

@@ -16,6 +16,8 @@ public class Messenger {
     }
 
     private void deliver() {
+        delivered = sender.deliver(delivery);
+
         int retries = 0;
         while (!delivered && retries < maxRetries) {
             delivered = sender.deliver(delivery.renew());
@@ -41,12 +43,8 @@ public class Messenger {
     }
 
     public Messenger run() {
-        delivered = sender.deliver(delivery);
-
-        if (!delivered) {
-            isDelivering = true;
-            (new Thread(this::deliver)).start();
-        }
+        isDelivering = true;
+        (new Thread(this::deliver)).start();
 
         return this;
     }
