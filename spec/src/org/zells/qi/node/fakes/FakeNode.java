@@ -1,14 +1,9 @@
 package org.zells.qi.node.fakes;
 
 import org.zells.qi.model.Cell;
-import org.zells.qi.model.Peer;
-import org.zells.qi.model.deliver.Delivery;
 import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.Node;
-import org.zells.qi.node.PeerFactory;
-import org.zells.qi.node.signals.DeliverSignal;
-import org.zells.qi.node.signals.OkSignal;
 
 public class FakeNode extends Node {
 
@@ -29,7 +24,7 @@ public class FakeNode extends Node {
     }
 
     private FakeNode(Cell cell, Path context, FakeChannel channel) {
-        super(cell, context, channel, new FakePeerFactory(channel));
+        super(cell, context, channel, connection -> channel);
         this.cell = cell;
         this.channel = channel;
     }
@@ -38,41 +33,5 @@ public class FakeNode extends Node {
     public void send(MessageSend send) {
         super.send(send);
         sent = send;
-    }
-
-    private static class FakePeerFactory implements PeerFactory {
-        private FakeChannel channel;
-
-        FakePeerFactory(FakeChannel channel) {
-            this.channel = channel;
-        }
-
-        @Override
-        public Peer buildFromConnection(String connection) {
-            return new FakePeer();
-        }
-
-        private class FakePeer implements Peer {
-            @Override
-            public boolean deliver(Delivery delivery) {
-                return channel.send((new DeliverSignal(
-                        delivery.getContext(),
-                        delivery.getTarget(),
-                        delivery.getReceiver(),
-                        delivery.getMessage(),
-                        delivery.getGuid()
-                )).toString()) instanceof OkSignal;
-            }
-
-            @Override
-            public boolean equals(Object obj) {
-                return obj instanceof FakePeer;
-            }
-
-            @Override
-            public int hashCode() {
-                return 1;
-            }
-        }
     }
 }

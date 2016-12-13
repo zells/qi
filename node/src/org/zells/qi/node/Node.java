@@ -9,20 +9,24 @@ import org.zells.qi.node.parsing.SignalParser;
 import org.zells.qi.node.parsing.SignalPrinter;
 import org.zells.qi.node.signals.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class Node {
 
     private final Cell cell;
     private final Path context;
     private final Channel channel;
-    private final PeerFactory peers;
     private final SignalPrinter printer = new SignalPrinter();
     private final SignalParser parser = new SignalParser();
+    private Map<String, NodePeer> peers = new HashMap<>();
+    private ChannelFactory channels;
 
-    public Node(Cell cell, Path context, Channel channel, PeerFactory peers) {
+    public Node(Cell cell, Path context, Channel channel, ChannelFactory channels) {
         this.cell = cell;
         this.context = context;
         this.channel = channel;
-        this.peers = peers;
+        this.channels = channels;
 
         channel.listen(new SignalListener());
     }
@@ -63,11 +67,13 @@ public abstract class Node {
     }
 
     private void receive(JoinSignal signal) {
-        cell.join(peers.buildFromConnection(signal.getConnection()));
+        NodePeer peer = new NodePeer(printer, channels.forConnection(signal.getConnection()));
+        peers.put(signal.getConnection(), peer);
+        cell.join(peer);
     }
 
     private void receive(LeaveSignal signal) {
-        cell.leave(peers.buildFromConnection(signal.getConnection()));
+        cell.leave(peers.get(signal.getConnection()));
     }
 
     public void join(String connection) {

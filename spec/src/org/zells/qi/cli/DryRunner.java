@@ -5,7 +5,6 @@ import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.Node;
 import org.zells.qi.node.fakes.FakeChannel;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class DryRunner {
 
@@ -18,9 +17,7 @@ public class DryRunner {
 
     private static class EchoNode extends Node {
         EchoNode() {
-            super(new Cell(), new Path(), new FakeChannel(), connection -> {
-                throw new NotImplementedException();
-            });
+            super(new Cell(), new Path(), new FakeChannel(), connection -> new FakeChannel());
         }
 
         @Override
