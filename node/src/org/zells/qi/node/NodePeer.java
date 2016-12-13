@@ -31,4 +31,15 @@ public class NodePeer implements Peer {
             return false;
         }
     }
+
+    @Override
+    public int hashCode() {
+        return channel.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof NodePeer
+                && ((NodePeer) obj).channel.equals(channel);
+    }
 }

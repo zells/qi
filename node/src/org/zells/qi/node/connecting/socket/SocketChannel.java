@@ -44,4 +44,16 @@ public class SocketChannel implements Channel {
             return new FailedSignal(e.getMessage());
         }
     }
+
+    @Override
+    public int hashCode() {
+        return host.hashCode() + port;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof SocketChannel
+                && ((SocketChannel) obj).host.equals(host)
+                && ((SocketChannel) obj).port == port;
+    }
 }
