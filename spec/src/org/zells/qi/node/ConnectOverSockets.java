@@ -1,5 +1,7 @@
 package org.zells.qi.node;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.model.Cell;
 import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
@@ -16,9 +18,12 @@ public class ConnectOverSockets {
 
     private Path received;
     private int count = 0;
+    private Cell rootTwo;
+    private Node two;
+    private Node one;
 
-    @Test
-    void SendMessage() throws InterruptedException {
+    @BeforeEach
+    void SetUp() {
         GlobalUniqueIdentifierGenerator.setGenerator(new GlobalUniqueIdentifierGenerator() {
             int id = 0;
 
@@ -28,36 +33,74 @@ public class ConnectOverSockets {
             }
         });
 
-        Node one = new Node(
+        one = new Node(
                 new Cell(),
                 new Path(Root.name()),
-                new SocketServer("localhost", 42421),
+                new SocketServer("localhost", 12121),
                 new DefaultChannelFactory());
 
-        Cell rootTwo = new Cell();
+        rootTwo = new Cell();
+        two = new Node(
+                rootTwo,
+                new Path(Root.name()),
+                new SocketServer("localhost", 21212),
+                new DefaultChannelFactory()
+        );
+    }
+
+    @AfterEach
+    void TearDown() {
+        one.stop();
+        two.stop();
+    }
+
+    @Test
+    void SendMessage() {
         rootTwo.setReaction(message -> {
             count++;
             received = message;
             return null;
         });
 
-        Node two = new Node(
-                rootTwo,
-                new Path(Root.name()),
-                new SocketServer("localhost", 42422),
-                new DefaultChannelFactory()
-        );
-
-        two.join("localhost:42421");
+        two.join("localhost:12121");
 
         one.send(new MessageSend(new Path(), new Path(Child.name("message"))));
 
-        Thread.sleep(50);
-
-        one.stop();
-        two.stop();
+        sleep(50);
 
         assertEquals(new Path(Root.name(), Child.name("message")), received);
         assertEquals(1, count);
+    }
+
+    @Test
+    void DoesNotBlockSocket() {
+        rootTwo.createChild("foo").setReaction(message -> {
+            count++;
+            while (received == null) {
+                sleep(10);
+            }
+            return null;
+        });
+        rootTwo.createChild("bar").setReaction(message -> {
+            count++;
+            received = message;
+            return null;
+        });
+
+        two.join("localhost:12121");
+
+        one.send(new MessageSend(new Path(Child.name("foo")), new Path()));
+        one.send(new MessageSend(new Path(Child.name("bar")), new Path()));
+
+        sleep(30);
+
+        assertEquals(2, count);
+    }
+
+    private void sleep(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ignored) {
+        }
     }
 }

@@ -31,36 +31,13 @@ public class SocketServer implements Server {
     public void start(SignalListener listener) {
         try {
             server = new ServerSocket(port);
-            running = true;
-
-            (new Thread(() -> {
-                while (running) {
-                    try {
-                        Socket socket = server.accept();
-
-                        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-                        Signal signal = parser.parse(in.readLine());
-                        System.err.println(port + " <<< " + signal);
-                        Signal response = listener.receives(signal);
-                        System.err.println(port + " >>> " + response);
-
-                        out.println(printer.print(response));
-
-                        in.close();
-                        out.close();
-                        socket.close();
-                    } catch (IOException e) {
-                        if (running) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            })).start();
         } catch (IOException e) {
             throw new RuntimeException("Failed to open port " + port, e);
         }
+
+        running = true;
+
+        (new SocketListener(server, listener)).start();
     }
 
     @Override
@@ -80,5 +57,69 @@ public class SocketServer implements Server {
     @Override
     public String getConnection() {
         return host + ":" + port;
+    }
+
+    private class SocketListener extends Thread {
+
+        private ServerSocket server;
+        private SignalListener listener;
+
+        SocketListener(ServerSocket server, SignalListener listener) {
+            this.server = server;
+            this.listener = listener;
+        }
+
+        @Override
+        public void run() {
+
+            (new Thread(() -> {
+                while (running) {
+                    try {
+                        Socket socket = server.accept();
+                        (new SignalWorker(socket, listener)).start();
+                    } catch (IOException e) {
+                        if (running) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            })).start();
+        }
+    }
+
+    private class SignalWorker extends Thread {
+
+        private final Socket socket;
+        private final SignalListener listener;
+
+        SignalWorker(Socket socket, SignalListener listener) {
+            this.socket = socket;
+            this.listener = listener;
+        }
+
+        @Override
+        public void run() {
+            PrintWriter out = null;
+            BufferedReader in = null;
+
+            try {
+                out = new PrintWriter(socket.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                Signal signal = parser.parse(in.readLine());
+                Signal response = listener.receives(signal);
+
+                out.println(printer.print(response));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                if (in != null) in.close();
+                if (out != null) out.close();
+                socket.close();
+            } catch (IOException ignored) {
+            }
+        }
     }
 }
