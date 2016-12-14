@@ -92,7 +92,7 @@ public class ConnectOverSocketsTest {
         one.send(new MessageSend(new Path(Child.name("foo")), new Path()));
         one.send(new MessageSend(new Path(Child.name("bar")), new Path()));
 
-        sleep(30);
+        sleep(50);
 
         assertEquals(2, count);
     }
