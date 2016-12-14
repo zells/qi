@@ -1,0 +1,6 @@
+dependencies {
+    compile project(':model')
+    compile project(':node')
+    
+    testCompile project(path: ':node', configuration: 'tests')
+}
