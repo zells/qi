@@ -18,7 +18,7 @@ public class Node {
     private final Cell cell;
     private final Path context;
     private final Server server;
-    private Map<String, NodePeer> peers = new HashMap<>();
+    private Map<String, Peer> peers = new HashMap<>();
     private ChannelFactory channels;
 
     public Node(Cell cell, Path context, Server server, ChannelFactory channels) {
@@ -70,7 +70,7 @@ public class Node {
     }
 
     private Signal receive(JoinSignal signal) {
-        NodePeer peer = new NodePeer(channels.forConnection(signal.getConnection()));
+        Peer peer = new Peer(channels.forConnection(signal.getConnection()));
         peers.put(signal.getConnection(), peer);
         cell.join(peer);
 

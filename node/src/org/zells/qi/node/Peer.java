@@ -1,17 +1,17 @@
 package org.zells.qi.node;
 
-import org.zells.qi.model.Peer;
+import org.zells.qi.model.Courier;
 import org.zells.qi.model.deliver.Delivery;
 import org.zells.qi.node.connecting.Channel;
 import org.zells.qi.node.connecting.Signal;
 import org.zells.qi.node.connecting.signals.DeliverSignal;
 import org.zells.qi.node.connecting.signals.ReceivedSignal;
 
-public class NodePeer implements Peer {
+public class Peer implements Courier {
 
     private final Channel channel;
 
-    public NodePeer(Channel channel) {
+    public Peer(Channel channel) {
         this.channel = channel;
     }
 
@@ -39,7 +39,7 @@ public class NodePeer implements Peer {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof NodePeer
-                && ((NodePeer) obj).channel.equals(channel);
+        return obj instanceof Peer
+                && ((Peer) obj).channel.equals(channel);
     }
 }

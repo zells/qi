@@ -1,26 +1,26 @@
 package org.zells.qi.model.deliver;
 
-import org.zells.qi.model.Cell;
+import org.zells.qi.model.Courier;
 
 public class Messenger {
-    private final Cell sender;
+    private final Courier courier;
     private final Delivery delivery;
     private Runnable failed;
     private int maxRetries = 100;
     private boolean delivered = false;
     private boolean isDelivering = false;
 
-    public Messenger(Cell sender, Delivery delivery) {
-        this.sender = sender;
+    public Messenger(Courier courier, Delivery delivery) {
+        this.courier = courier;
         this.delivery = delivery;
     }
 
     private void deliver() {
-        delivered = sender.deliver(delivery);
+        delivered = courier.deliver(delivery);
 
         int retries = 0;
         while (!delivered && retries < maxRetries) {
-            delivered = sender.deliver(delivery.renew());
+            delivered = courier.deliver(delivery.renew());
             retries++;
             sleep(5 * retries);
         }

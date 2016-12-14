@@ -3,7 +3,7 @@ package org.zells.qi.apps;
 import org.zells.qi.cli.CommandLineInterface;
 import org.zells.qi.cli.ConsoleUser;
 import org.zells.qi.model.Cell;
-import org.zells.qi.node.NodePeer;
+import org.zells.qi.node.Peer;
 import org.zells.qi.node.connecting.DefaultChannelFactory;
 
 public class Client extends Application {
@@ -29,7 +29,7 @@ public class Client extends Application {
             String connection = message.last().toString();
 
             node.join(connection);
-            root.join(new NodePeer(channels.forConnection(connection)));
+            root.join(new Peer(channels.forConnection(connection)));
 
             return null;
         });

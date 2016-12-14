@@ -94,7 +94,7 @@ public class IsDistributed extends Specification {
     @Test
     void LeavePeer() {
         Cell cell = new Cell();
-        Peer peer = delivery -> true;
+        Courier peer = delivery -> true;
 
         cell.join(peer);
         cell.join(delivery -> false);
@@ -131,7 +131,7 @@ public class IsDistributed extends Specification {
         final int[] count = {0};
 
         Cell cell = new Cell();
-        Peer peer = delivery -> {
+        Courier peer = delivery -> {
             count[0]++;
             received = delivery.getMessage();
             return false;

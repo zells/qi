@@ -10,19 +10,19 @@ import org.zells.qi.model.refer.names.*;
 
 import java.util.*;
 
-public class Cell {
+public class Cell implements Courier {
 
-    private Map<Name, Cell> children = new HashMap<>();
-    private Cell parent;
+    private Map<Name, Courier> children = new HashMap<>();
+    private Courier parent;
     private Reaction reaction;
     private Path stem;
     private Set<Delivery> delivered = new HashSet<>();
-    private Set<Peer> peers = new HashSet<>();
+    private Set<Courier> peers = new HashSet<>();
 
     public Cell() {
     }
 
-    private Cell(Cell parent) {
+    private Cell(Courier parent) {
         this.parent = parent;
     }
 
@@ -37,23 +37,22 @@ public class Cell {
     }
 
     public Cell createChild(String name) {
-        if (children.containsKey(Child.name(name))) {
-            return children.get(Child.name(name));
-        }
-        return putChild(name, new Cell(this));
-    }
-
-    Cell putChild(String name, Cell child) {
-        children.put(Child.name(name), child);
+        Cell child = new Cell(this);
+        putChild(name, child);
         return child;
     }
 
-    public Cell join(Peer peer) {
+    Cell putChild(String name, Courier child) {
+        children.put(Child.name(name), child);
+        return this;
+    }
+
+    public Cell join(Courier peer) {
         peers.add(peer);
         return this;
     }
 
-    public Cell leave(Peer peer) {
+    public Cell leave(Courier peer) {
         peers.remove(peer);
         return this;
     }
@@ -120,7 +119,7 @@ public class Cell {
     }
 
     private boolean deliverToPeer(Delivery delivery) {
-        for (Peer peer : peers) {
+        for (Courier peer : peers) {
             if (peer.deliver(delivery)) {
                 return true;
             }
