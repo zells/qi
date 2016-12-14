@@ -1,3 +1,13 @@
 dependencies {
     compile project(':model')
 }
+
+task buildNode(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'qi Client API'
+    }
+    baseName = 'qi-node'
+    destinationDir = file("$rootDir/build")
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
