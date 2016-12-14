@@ -12,7 +12,9 @@ public class ConsoleUser extends User implements Runnable {
 
     @Override
     public void tell(String output) {
+        System.out.println();
         System.out.println(output);
+        System.out.print("> ");
     }
 
     @Override

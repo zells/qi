@@ -38,9 +38,7 @@ public class Client {
 
         Cell cell = root.createChild(Integer.toString(port));
         cell.setReaction(message -> {
-            user.tell("");
             user.tell(message.last().toString());
-            System.out.print("> ");
             return null;
         });
 
