@@ -1,7 +1,7 @@
 package org.zells.qi.node.connecting.socket;
 
 import org.zells.qi.node.connecting.Server;
-import org.zells.qi.node.connecting.Signal;
+import org.zells.qi.node.singalling.Signal;
 import org.zells.qi.node.parsing.SignalParser;
 import org.zells.qi.node.parsing.SignalPrinter;
 

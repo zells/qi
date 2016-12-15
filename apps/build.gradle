@@ -3,30 +3,18 @@ dependencies {
     compile project(':cli')
 }
 
-task buildClient(type: Jar) {
-    manifest {
-        attributes 'Implementation-Title': 'qi Chat Client',
-                'Main-Class': 'org.zells.qi.apps.Client'
-    }
-    baseName = 'Client'
-    destinationDir = file("$rootDir/build")
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
-
-task buildChannel(type: Jar) {
-    manifest {
-        attributes 'Implementation-Title': 'qi Chat Channel',
-                'Main-Class': 'org.zells.qi.apps.Channel'
-    }
-    baseName = 'Channel'
-    destinationDir = file("$rootDir/build")
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
-
 task buildApps() {
 }
 
-buildApps.dependsOn buildClient
-buildApps.dependsOn buildChannel
+task buildChatter(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'qi sample application',
+                'Main-Class': 'org.zells.qi.apps.Chatter'
+    }
+    baseName = 'chatter'
+    destinationDir = file("$rootDir/build")
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+buildApps.dependsOn buildChatter

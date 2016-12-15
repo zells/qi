@@ -18,57 +18,68 @@ The project is built with [gradle].
 
 ## Usage
 
-There are two applications to test the model: a *Client* for sending and receiving messages and a *Channel* for forwarding messages to several clients.
-
-### Client
-
-To build and start a client on port `42421` use the following commands
-
-    ./gradlew buildClient
-    java -jar build/Client.jar 42421
-
-You can now send messages using the syntax `receiver message`. Messages sent to `°.42421` are displayed.
-
-    > 42421 Hello
-
-Start a second client on a different port, connect to the first client and send a message to it
-
-    java -jar build/Client.jar 42422
-    > connect localhost:42421
-    > 42421 HelloYou
-
-## Channel
-
-To build and start a channel on port `42420` use these commands
-
-    ./gradlew buildChannel
-    java -jar build/Channel.jar 42420
-
-Clients can now connect and subscribe to the channel
-
-    > connect localhost:42420
-    > 42420.subscribe 42421
-    > 42420.subscribe 42422
-
-Messages sent to the channel are forwarded to all subscribed clients.
-
-## Library
-
-To build your own application, bundle the *Node* and use it's API as done in the [Client] and [Channel].
+This project is a library for building distributed applications. The following command will pack all dependencies of the `Node` module into `build/qi-node.jar`.
 
     ./gradlew buildNode
 
-[Client]: https://github.com/zells/qi/blob/master/apps/src/main/java/org/zells/qi/apps/Client.java
-[Channel]: https://github.com/zells/qi/blob/master/apps/src/main/java/org/zells/qi/apps/Channel.java
+The [`Chatter`][chatter] application demonstrate how to use this library.
+
+
+## Concepts
+
+The project is split into four modules.
+
+### Model
+
+Implements the model mentioned above. The concept behind most of the classes are described [here][blog]. One exception is `Courier` which defines the public interface of a `Cell`.
+
+### Node
+
+The `Node` connects a local model to other models, forming a single, distributed model. The `Cell` and the `Node` classes form the programming interface to client applications. Please refer to the [`Chatter`][chatter] classes for a usage example.
+
+### CLI
+
+The `CommandLineInterface` allows its user to send arbitrary messages to arbitrary cells and to display messages to the user.
+
+### Apps
+
+The `Chatter` application can *connect* with other nodes, create *users* for 1-to-1 communication and *topics* that users can subscribe to for n-to-n communication.
+
+To use it, build the application, start a Chatter node on post 42421, and choose a name.
+
+    ./gradlew buildApps
+    java -jar build/chatter.jar 42421
+    > iam Alice
+
+The last command sends the message `Alice` to the cell `iam` which creates the cell `user.Alice` which displays all received messages to the user. To send a message to Alice, start a second Chatter, choose another name, connect to the first node and say "hello".
+
+    java -jar build/chatter.jar 42422
+    > iam Bob
+    > connect localhost:42421
+    > user.Alice HelloThere
+
+Open a third Chatter, choose a name and connect to the second one. Then open a topic, subscribe Alice and Bob to it and publish a message on it. The message will be received by both users. Note that there is no direct connection between Charlie and Alice.
+
+    java -jar build/chatter.jar 42423
+    > iam Charlie
+    > connect localhost:42422
+    > open foo
+    > topic.foo.subscribe Alice
+    > topic.foo.subscribe Bob
+    > topic.foo HelloAll
+
+[chatter]: https://github.com/zells/qi/blob/master/apps/src/main/java/org/zells/qi/apps/Channel.java
 
 
 ## Documentation ##
 
-This project is a work-in-progress and has currently no documentation. If you have any question or comment, please don't hesitate to [contact me].
+This project is a work-in-progress and it's documentation consists currently of this document as well as the [article describing the model][blog]. If you have any question or comment, please don't hesitate to [contact me].
 
 [contact me]: https://github.com/rtens
 
 
 ## Contribution ##
 
-Any kind of contribution will be much appreciated. Not just code but also comments and general remarks.
+Any kind of contribution will be much appreciated. Not just code but also comments and general remarks. Just drop me a line or open a [new issue].
+
+[new issue]: https://github.com/zells/qi/issues/new

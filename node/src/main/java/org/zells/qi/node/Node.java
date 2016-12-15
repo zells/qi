@@ -7,8 +7,9 @@ import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.connecting.ChannelFactory;
 import org.zells.qi.node.connecting.Server;
-import org.zells.qi.node.connecting.Signal;
-import org.zells.qi.node.connecting.signals.*;
+import org.zells.qi.node.singalling.signals.*;
+import org.zells.qi.node.connecting.Peer;
+import org.zells.qi.node.singalling.Signal;
 
 import java.util.HashMap;
 import java.util.Map;

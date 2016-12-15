@@ -1,6 +1,6 @@
 package org.zells.qi.node.parsing;
 
-import org.zells.qi.node.connecting.Signal;
+import org.zells.qi.node.singalling.Signal;
 
 public class SignalPrinter {
 

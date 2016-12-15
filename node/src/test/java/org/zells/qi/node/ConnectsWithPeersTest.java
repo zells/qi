@@ -8,9 +8,9 @@ import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Root;
-import org.zells.qi.node.connecting.signals.DeliverSignal;
-import org.zells.qi.node.connecting.signals.JoinSignal;
-import org.zells.qi.node.connecting.signals.LeaveSignal;
+import org.zells.qi.node.singalling.signals.DeliverSignal;
+import org.zells.qi.node.singalling.signals.JoinSignal;
+import org.zells.qi.node.singalling.signals.LeaveSignal;
 import org.zells.qi.node.fakes.FakeChannel;
 import org.zells.qi.node.fakes.FakeNode;
 

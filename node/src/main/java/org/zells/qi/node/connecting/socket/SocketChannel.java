@@ -1,8 +1,8 @@
 package org.zells.qi.node.connecting.socket;
 
 import org.zells.qi.node.connecting.Channel;
-import org.zells.qi.node.connecting.Signal;
-import org.zells.qi.node.connecting.signals.FailedSignal;
+import org.zells.qi.node.singalling.Signal;
+import org.zells.qi.node.singalling.signals.FailedSignal;
 import org.zells.qi.node.parsing.SignalParser;
 import org.zells.qi.node.parsing.SignalPrinter;
 

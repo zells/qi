@@ -2,7 +2,6 @@ package org.zells.qi.cli;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 import org.zells.qi.cli.fakes.FakeUser;
 import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
 import org.zells.qi.model.react.MessageSend;

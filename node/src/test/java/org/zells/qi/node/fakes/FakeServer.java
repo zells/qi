@@ -1,7 +1,7 @@
 package org.zells.qi.node.fakes;
 
 import org.zells.qi.node.connecting.Server;
-import org.zells.qi.node.connecting.Signal;
+import org.zells.qi.node.singalling.Signal;
 
 public class FakeServer implements Server {
 

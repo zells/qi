@@ -1,11 +1,10 @@
-package org.zells.qi.node;
+package org.zells.qi.node.connecting;
 
 import org.zells.qi.model.Courier;
 import org.zells.qi.model.deliver.Delivery;
-import org.zells.qi.node.connecting.Channel;
-import org.zells.qi.node.connecting.Signal;
-import org.zells.qi.node.connecting.signals.DeliverSignal;
-import org.zells.qi.node.connecting.signals.ReceivedSignal;
+import org.zells.qi.node.singalling.Signal;
+import org.zells.qi.node.singalling.signals.DeliverSignal;
+import org.zells.qi.node.singalling.signals.ReceivedSignal;
 
 public class Peer implements Courier {
 

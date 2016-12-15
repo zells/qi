@@ -1,7 +1,7 @@
 package org.zells.qi.node.parsing;
 
-import org.zells.qi.node.connecting.Signal;
-import org.zells.qi.node.connecting.signals.*;
+import org.zells.qi.node.singalling.Signal;
+import org.zells.qi.node.singalling.signals.*;
 
 public class SignalParser {
 

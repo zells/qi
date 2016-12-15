@@ -15,7 +15,6 @@ import java.util.UUID;
 
 abstract class Application {
 
-    final int port;
     final Cell root;
     final Node node;
 
@@ -26,13 +25,11 @@ abstract class Application {
                 return UUID.randomUUID().toString();
             }
         });
-        port = determinePort(args);
 
         root = new Cell();
-
         node = new Node(root,
                 new Path(Root.name()),
-                new SocketServer("localhost", port),
+                new SocketServer("localhost", determinePort(args)),
                 new DefaultChannelFactory());
 
         buildModel();

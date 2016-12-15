@@ -1,6 +1,6 @@
-package org.zells.qi.node.connecting.signals;
+package org.zells.qi.node.singalling.signals;
 
-import org.zells.qi.node.connecting.Signal;
+import org.zells.qi.node.singalling.Signal;
 
 public class OkSignal implements Signal {
 

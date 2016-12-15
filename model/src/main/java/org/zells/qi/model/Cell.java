@@ -42,7 +42,7 @@ public class Cell implements Courier {
         return child;
     }
 
-    Cell putChild(String name, Courier child) {
+    public Cell putChild(String name, Courier child) {
         children.put(Child.name(name), child);
         return this;
     }
