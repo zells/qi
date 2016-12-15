@@ -68,7 +68,7 @@ Open a third Chatter, choose a name and connect to the second one. Then open a t
     > topic.foo.subscribe Bob
     > topic.foo HelloAll
 
-[chatter]: https://github.com/zells/qi/blob/master/apps/src/main/java/org/zells/qi/apps/Channel.java
+[chatter]: https://github.com/zells/qi/blob/master/apps/src/main/java/org/zells/qi/apps/Chatter.java
 
 
 ## Documentation ##
