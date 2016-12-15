@@ -22,28 +22,9 @@ This project is a library for building distributed applications. The following c
 
     ./gradlew buildNode
 
-The [`Chatter`][chatter] application demonstrate how to use this library.
-
-
-## Concepts
-
-The project is split into four modules.
-
-### Model
-
-Implements the model mentioned above. The concept behind most of the classes are described [here][blog]. One exception is `Courier` which defines the public interface of a `Cell`.
-
-### Node
-
-The `Node` connects a local model to other models, forming a single, distributed model. The `Cell` and the `Node` classes form the programming interface to client applications. Please refer to the [`Chatter`][chatter] classes for a usage example.
-
-### CLI
-
-The `CommandLineInterface` allows its user to send arbitrary messages to arbitrary cells and to display messages to the user.
-
 ### Apps
 
-The `Chatter` application can *connect* with other nodes, create *users* for 1-to-1 communication and *topics* that users can subscribe to for n-to-n communication.
+The [`Chatter`][chatter] application demonstrate how to use this library. It can *connect* with other nodes, create *users* for 1-to-1 communication and *topics* that users can subscribe to for n-to-n communication.
 
 To use it, build the application, start a Chatter node on post 42421, and choose a name.
 
@@ -68,7 +49,24 @@ Open a third Chatter, choose a name and connect to the second one. Then open a t
     > topic.foo.subscribe Bob
     > topic.foo HelloAll
 
+
+## Concepts
+
+The project is split into four modules.
+
+### Model
+
+Implements the model mentioned above. The concept behind most of the classes are described [here][blog]. One exception is `Courier` which defines the public interface of a `Cell`.
+
+### Node
+
+The `Node` connects a local model to other models, forming a single, distributed model. The `Cell` and the `Node` classes form the programming interface to client applications. Please refer to the [`Chatter`][chatter] classes for a usage example.
+
 [chatter]: https://github.com/zells/qi/blob/master/apps/src/main/java/org/zells/qi/apps/Chatter.java
+
+### CLI
+
+The `CommandLineInterface` allows its user to send arbitrary messages to arbitrary cells and to display messages to the user.
 
 
 ## Documentation ##
