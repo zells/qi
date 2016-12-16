@@ -2,20 +2,50 @@ package org.zells.qi.cli;
 
 import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
+import org.zells.qi.node.parsing.Input;
 import org.zells.qi.node.parsing.PathParser;
 
 class Parser {
 
+    private enum State {
+        Start, Between, End
+    }
+
     private PathParser path = new PathParser();
 
-    MessageSend parse(String messageSend) {
-        String[] receiverAndMessage = messageSend.split("\\s");
+    MessageSend parse(Input input) {
+        State state = State.Start;
 
-        Path receiver = path.parse(receiverAndMessage[0]);
+        Path receiver = new Path();
         Path message = new Path();
 
-        if (receiverAndMessage.length > 1) {
-            message = path.parse(receiverAndMessage[1]);
+        while (input.hasNext()) {
+            switch (state) {
+                case Start:
+                    switch (input.current()) {
+                        case ' ':
+                            state = State.Between;
+                            input.skip();
+                            break;
+                        default:
+                            state = State.Between;
+                            receiver = path.parse(input);
+                    }
+                    break;
+                case Between:
+                    switch (input.current()) {
+                        case ' ':
+                            state = State.Between;
+                            input.skip();
+                            break;
+                        default:
+                            state = State.End;
+                            message = path.parse(input);
+                    }
+                    break;
+                default:
+                    input.skip();
+            }
         }
 
         return new MessageSend(receiver, message);

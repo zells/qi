@@ -33,6 +33,8 @@ public class ConnectOverSocketsTest {
             }
         });
 
+        sleep(10);
+
         one = new Node(
                 new Cell(),
                 new Path(Root.name()),
@@ -95,6 +97,22 @@ public class ConnectOverSocketsTest {
         sleep(50);
 
         assertEquals(2, count);
+    }
+
+    @Test
+    void SerializesPaths() {
+        rootTwo.setReaction(message -> {
+            received = message;
+            return null;
+        });
+
+        two.join("localhost:12121");
+
+        one.send(new MessageSend(new Path(), new Path(Child.name("foo bar.baz"))));
+
+        sleep(50);
+
+        assertEquals(new Path(Root.name(), Child.name("foo bar.baz")), received);
     }
 
     private void sleep(int millis) {

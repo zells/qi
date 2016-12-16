@@ -2,6 +2,7 @@ package org.zells.qi.cli;
 
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.Node;
+import org.zells.qi.node.parsing.Input;
 
 public class CommandLineInterface {
 
@@ -28,7 +29,7 @@ public class CommandLineInterface {
                 return;
             }
 
-            node.send(parser.parse(input),
+            node.send(parser.parse(new Input(input)),
                     () -> user.tell("## Failed to deliver " + input));
         }
     }

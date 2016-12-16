@@ -1,6 +1,7 @@
 package org.zells.qi.cli;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.cli.fakes.FakeUser;
 import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
@@ -87,6 +88,51 @@ public class SendsMessagesTest {
         assertEquals(new MessageSend(
                 new Path(Parent.name(), Child.name("foo"), Child.name("bar")),
                 new Path(Root.name(), Child.name("baz"))
+        ), node.sent);
+    }
+
+    @Test
+    void DotInName() {
+        user.say("\"foo.bar\".baz");
+        assertEquals(new MessageSend(
+                new Path(Child.name("foo.bar"), Child.name("baz")),
+                new Path()
+        ), node.sent);
+    }
+
+    @Test
+    void SpaceInName() {
+        user.say("\"foo bar\".baz");
+        assertEquals(new MessageSend(
+                new Path(Child.name("foo bar"), Child.name("baz")),
+                new Path()
+        ), node.sent);
+    }
+
+    @Test
+    void QuoteInName() {
+        user.say("foo\"bar.baz");
+        assertEquals(new MessageSend(
+                new Path(Child.name("foo\"bar"), Child.name("baz")),
+                new Path()
+        ), node.sent);
+    }
+
+    @Test
+    void QuoteInQuotedName() {
+        user.say("\"foo\"\"bar\".baz");
+        assertEquals(new MessageSend(
+                new Path(Child.name("foo\"bar"), Child.name("baz")),
+                new Path()
+        ), node.sent);
+    }
+
+    @Test
+    void QuotedRoot() {
+        user.say("\"°\"");
+        assertEquals(new MessageSend(
+                new Path(Child.name("°")),
+                new Path()
         ), node.sent);
     }
 }

@@ -12,7 +12,7 @@ public class Path {
 
     private final List<Name> names;
 
-    private Path(List<Name> names) {
+    public Path(List<Name> names) {
         this.names = names;
     }
 

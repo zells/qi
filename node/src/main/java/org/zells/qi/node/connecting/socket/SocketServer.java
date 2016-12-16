@@ -1,6 +1,7 @@
 package org.zells.qi.node.connecting.socket;
 
 import org.zells.qi.node.connecting.Server;
+import org.zells.qi.node.parsing.Input;
 import org.zells.qi.node.singalling.Signal;
 import org.zells.qi.node.parsing.SignalParser;
 import org.zells.qi.node.parsing.SignalPrinter;
@@ -106,7 +107,7 @@ public class SocketServer implements Server {
                 out = new PrintWriter(socket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-                Signal signal = parser.parse(in.readLine());
+                Signal signal = parser.parse(new Input(in.readLine()));
                 Signal response = listener.receives(signal);
 
                 out.println(printer.print(response));

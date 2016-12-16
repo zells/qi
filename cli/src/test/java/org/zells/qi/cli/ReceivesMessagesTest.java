@@ -1,6 +1,7 @@
 package org.zells.qi.cli;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.cli.fakes.FakeUser;
 import org.zells.qi.model.deliver.Delivery;
@@ -41,6 +42,24 @@ public class ReceivesMessagesTest {
     void PrintPath() {
         deliver(new Path(Root.name(), Child.name("foo"), Child.name("bar")));
         assertEquals("°.foo.bar", user.told);
+    }
+
+    @Test
+    void DotInName() {
+        deliver(new Path(Child.name("foo.bar")));
+        assertEquals("\"foo.bar\"", user.told);
+    }
+
+    @Test
+    void SpaceInName() {
+        deliver(new Path(Child.name("foo bar")));
+        assertEquals("\"foo bar\"", user.told);
+    }
+
+    @Test
+    void QuoteInName() {
+        deliver(new Path(Child.name("foo \"bar")));
+        assertEquals("\"foo \"\"bar\"", user.told);
     }
 
     private void deliver(Path message) {

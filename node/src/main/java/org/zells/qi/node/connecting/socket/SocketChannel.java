@@ -1,6 +1,7 @@
 package org.zells.qi.node.connecting.socket;
 
 import org.zells.qi.node.connecting.Channel;
+import org.zells.qi.node.parsing.Input;
 import org.zells.qi.node.singalling.Signal;
 import org.zells.qi.node.singalling.signals.FailedSignal;
 import org.zells.qi.node.parsing.SignalParser;
@@ -33,7 +34,7 @@ public class SocketChannel implements Channel {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             out.println(printer.print(signal));
-            Signal response = parser.parse(in.readLine());
+            Signal response = parser.parse(new Input(in.readLine()));
 
             out.close();
             in.close();

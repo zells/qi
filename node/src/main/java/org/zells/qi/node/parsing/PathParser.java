@@ -2,33 +2,29 @@ package org.zells.qi.node.parsing;
 
 import org.zells.qi.model.refer.Name;
 import org.zells.qi.model.refer.Path;
-import org.zells.qi.model.refer.names.Child;
-import org.zells.qi.model.refer.names.Parent;
-import org.zells.qi.model.refer.names.Root;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PathParser {
 
-    public Path parse(String path) {
-        if (path.isEmpty() || path.equals(".")) {
-            return new Path();
+    private NameParser name = new NameParser();
+
+    public Path parse(Input input) {
+        List<Name> names = new ArrayList<>();
+
+        while (input.hasNext()) {
+            switch (input.current()) {
+                case ' ':
+                    return new Path(names);
+                case '.':
+                    input.skip();
+                    break;
+                default:
+                    names.add(name.parse(input));
+            }
         }
 
-        Path parsed = new Path();
-        for (String name : path.split("\\.")) {
-            parsed = parsed.with(parseName(name));
-        }
-
-        return parsed;
-    }
-
-    private Name parseName(String name) {
-        switch (name) {
-            case "°":
-                return Root.name();
-            case "^":
-                return Parent.name();
-            default:
-                return Child.name(name);
-        }
+        return new Path(names);
     }
 }
