@@ -16,9 +16,6 @@ public class Child extends Name {
 
     @Override
     public String toString() {
-        if (name.contains(" ") || name.contains(".")) {
-            return '"' + name.replaceAll("\"", "\"\"") + '"';
-        }
         return name;
     }
 }

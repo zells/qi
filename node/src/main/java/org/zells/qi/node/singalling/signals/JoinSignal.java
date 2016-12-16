@@ -13,6 +13,10 @@ public class JoinSignal implements Signal {
         this.connection = connection;
     }
 
+    public Path getPath() {
+        return path;
+    }
+
     public String getConnection() {
         return connection;
     }

@@ -33,7 +33,8 @@ public class SocketChannel implements Channel {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            out.println(printer.print(signal));
+            String print = printer.print(signal);
+            out.println(print);
             Signal response = parser.parse(new Input(in.readLine()));
 
             out.close();
