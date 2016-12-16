@@ -9,7 +9,6 @@ import org.zells.qi.node.connecting.DefaultChannelFactory;
 import org.zells.qi.node.connecting.socket.SocketServer;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.UUID;
 
