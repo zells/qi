@@ -42,33 +42,37 @@ public class SignalParser {
         Path receiver = path.parse(input);
         input.skip();
         Path message = path.parse(input);
+        input.skip();
+        String guid = rest(input);
 
         return new DeliverSignal(
                 context,
                 target,
                 receiver,
                 message,
-                rest(input)
+                guid
         );
     }
 
     private JoinSignal parseJoin(Input input) {
         Path path = this.path.parse(input);
         input.skip();
+        String connection = rest(input);
 
         return new JoinSignal(
                 path,
-                rest(input)
+                connection
         );
     }
 
     private LeaveSignal parseLeave(Input input) {
         Path path = this.path.parse(input);
         input.skip();
+        String connection = rest(input);
 
         return new LeaveSignal(
                 path,
-                rest(input)
+                connection
         );
     }
 

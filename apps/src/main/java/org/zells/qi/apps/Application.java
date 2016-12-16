@@ -29,13 +29,34 @@ abstract class Application {
         root = new Cell();
         node = new Node(root,
                 new Path(Root.name()),
-                new SocketServer("localhost", determinePort(args)),
+                new SocketServer(determineHost(args), determinePort(args)),
                 new DefaultChannelFactory());
 
         buildModel();
     }
 
     protected abstract void buildModel();
+
+    private String determineHost(String[] args) {
+        if (args.length > 1) {
+            return args[1];
+        }
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.print("Host [localhost]: ");
+
+        try {
+            String input = reader.readLine();
+            if (input.isEmpty()) {
+                return "localhost";
+            }
+            return input;
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            return determineHost(args);
+        }
+    }
 
     private int determinePort(String[] args) {
         if (args.length > 0) {

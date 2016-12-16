@@ -6,7 +6,7 @@ public class Messenger {
     private final Courier courier;
     private final Delivery delivery;
     private Runnable failed;
-    private int maxRetries = 100;
+    private int maxRetries = 10;
     private boolean delivered = false;
     private boolean isDelivering = false;
 
