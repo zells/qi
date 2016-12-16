@@ -38,40 +38,30 @@ abstract class Application {
     protected abstract void buildModel();
 
     private String determineHost(String[] args) {
-        if (args.length > 1) {
-            return args[1];
+        return askFor(args, 1, "Host", "localhost");
+    }
+
+    private int determinePort(String[] args) {
+        return Integer.parseInt(askFor(args, 0, "Port", "42421"));
+    }
+
+    private String askFor(String[] args, int index, String name, String defaultValue) {
+        if (args.length > index) {
+            return args[index];
         }
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-        System.out.print("Host [localhost]: ");
+        System.out.print(name + " [" + defaultValue + "]: ");
 
         try {
             String input = reader.readLine();
             if (input.isEmpty()) {
-                return "localhost";
+                return defaultValue;
             }
             return input;
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
-            return determineHost(args);
-        }
-    }
-
-    private int determinePort(String[] args) {
-        if (args.length > 0) {
-            return Integer.parseInt(args[0]);
-        }
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-        System.out.print("Port: ");
-
-        try {
-            return Integer.parseInt(reader.readLine());
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-            return determinePort(args);
+            return askFor(args, index, name, defaultValue);
         }
     }
 }
