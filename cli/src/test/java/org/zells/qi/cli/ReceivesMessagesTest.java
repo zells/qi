@@ -1,7 +1,6 @@
 package org.zells.qi.cli;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.cli.fakes.FakeUser;
 import org.zells.qi.model.deliver.Delivery;
@@ -41,7 +40,7 @@ public class ReceivesMessagesTest {
     @Test
     void PrintPath() {
         deliver(new Path(Root.name(), Child.name("foo"), Child.name("bar")));
-        assertEquals("°.foo.bar", user.told);
+        assertEquals("*.foo.bar", user.told);
     }
 
     @Test
@@ -69,10 +68,7 @@ public class ReceivesMessagesTest {
                 return "foo";
             }
         });
-        node.cell.setReaction(m -> {
-            cli.receive(m);
-            return null;
-        });
+        node.cell.setReaction(delivery -> cli.receive(delivery.getMessage()));
         node.cell.deliver(new Delivery(new Path(), new Path(), message));
     }
 }

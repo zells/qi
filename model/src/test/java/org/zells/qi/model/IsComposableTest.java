@@ -2,7 +2,7 @@ package org.zells.qi.model;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class IsComposableTest extends Specification {
 
@@ -11,8 +11,8 @@ public class IsComposableTest extends Specification {
         Cell cell = new Cell();
         cell.setReaction(catchMessage());
 
-        deliver(cell, "°", "", "m");
-        assertWasReceived("°.m");
+        deliver(cell, "*", "", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -21,8 +21,8 @@ public class IsComposableTest extends Specification {
         cell.createChild("foo")
                 .setReaction(catchMessage());
 
-        deliver(cell, "°", "foo", "m");
-        assertWasReceived("°.m");
+        deliver(cell, "*", "foo", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -49,8 +49,8 @@ public class IsComposableTest extends Specification {
                 .createChild("bar")
                 .setReaction(catchMessage());
 
-        deliver(cell, "°", "foo.bar", "m");
-        assertWasReceived("°.m");
+        deliver(cell, "*", "foo.bar", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -68,8 +68,8 @@ public class IsComposableTest extends Specification {
         cell.setReaction(catchMessage());
         Cell child = cell.createChild("foo");
 
-        deliver(child, "°.foo", "^", "m");
-        assertWasReceived("°.foo.m");
+        deliver(child, "*.foo", "^", "m");
+        assertWasReceived("*.foo.m");
     }
 
     @Test
@@ -86,8 +86,8 @@ public class IsComposableTest extends Specification {
         Cell child = cell.createChild("foo");
         Cell grandChild = child.createChild("bar");
 
-        deliver(grandChild, "°.foo.bar", "^.^", "m");
-        assertWasReceived("°.foo.bar.m");
+        deliver(grandChild, "*.foo.bar", "^.^", "m");
+        assertWasReceived("*.foo.bar.m");
     }
 
     @Test
@@ -96,7 +96,7 @@ public class IsComposableTest extends Specification {
         cell.setReaction(catchMessage());
         Cell grandChild = cell.createChild("foo").createChild("bar");
 
-        deliver(grandChild, "°.foo.bar", "°", "m");
-        assertWasReceived("°.foo.bar.m");
+        deliver(grandChild, "*.foo.bar", "*", "m");
+        assertWasReceived("*.foo.bar.m");
     }
 }

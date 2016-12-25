@@ -19,7 +19,7 @@ public class IsAbstractableTest extends Specification {
     void NonExistingStem() {
         Cell root = new Cell();
         Cell foo = root.createChild("foo");
-        foo.setStem(path("°.bar"));
+        foo.setStem(path("*.bar"));
 
         deliver(root, "", "", "");
         assertFalse(wasDelivered);
@@ -34,8 +34,8 @@ public class IsAbstractableTest extends Specification {
         foo.setStem(path("^.bar"));
         bar.setReaction(catchMessage());
 
-        deliver(root, "°", "foo", "m");
-        assertWasReceived("°.m");
+        deliver(root, "*", "foo", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -45,11 +45,11 @@ public class IsAbstractableTest extends Specification {
         Cell bar = root.createChild("bar");
 
         foo.setStem(path("^.bar"));
-        bar.setReaction(new DynamicReaction());
+        bar.setReaction(new DynamicReaction(bar));
         foo.setReaction(catchMessage());
 
-        deliver(root, "°", "foo", "m");
-        assertWasReceived("°.m");
+        deliver(root, "*", "foo", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -63,8 +63,8 @@ public class IsAbstractableTest extends Specification {
         bar.setStem(path("^.baz"));
         baz.setReaction(catchMessage());
 
-        deliver(root, "°", "foo", "m");
-        assertWasReceived("°.m");
+        deliver(root, "*", "foo", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -77,8 +77,8 @@ public class IsAbstractableTest extends Specification {
         foo.setStem(path("^.bar"));
         baz.setReaction(catchMessage());
 
-        deliver(root, "°", "foo.baz", "m");
-        assertWasReceived("°.m");
+        deliver(root, "*", "foo.baz", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -92,8 +92,8 @@ public class IsAbstractableTest extends Specification {
         foo.setStem(path("^.bar"));
         newBaz.setReaction(catchMessage());
 
-        deliver(root, "°", "foo.baz", "m");
-        assertWasReceived("°.m");
+        deliver(root, "*", "foo.baz", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -107,8 +107,8 @@ public class IsAbstractableTest extends Specification {
         foo.setStem(path("^.bar"));
         cat.setReaction(catchMessage());
 
-        deliver(root, "°", "foo.baz.cat", "m");
-        assertWasReceived("°.m");
+        deliver(root, "*", "foo.baz.cat", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -123,8 +123,8 @@ public class IsAbstractableTest extends Specification {
         bar.setStem(path("^.baz"));
         cat.setReaction(catchMessage());
 
-        deliver(root, "°", "foo.cat", "m");
-        assertWasReceived("°.m");
+        deliver(root, "*", "foo.cat", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -137,8 +137,8 @@ public class IsAbstractableTest extends Specification {
         baz.setStem(path("^.^.bar"));
         bar.setReaction(catchMessage());
 
-        deliver(root, "°", "foo.baz", "m");
-        assertWasReceived("°.m");
+        deliver(root, "*", "foo.baz", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -151,8 +151,8 @@ public class IsAbstractableTest extends Specification {
         foo.setStem(path("^.bar.baz"));
         baz.setReaction(catchMessage());
 
-        deliver(root, "°", "foo", "m");
-        assertWasReceived("°.m");
+        deliver(root, "*", "foo", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -189,8 +189,8 @@ public class IsAbstractableTest extends Specification {
         foo.setStem(path("bar"));
         bar.setReaction(catchMessage());
 
-        deliver(root, "°", "foo", "m");
-        assertWasReceived("°.m");
+        deliver(root, "*", "foo", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -201,13 +201,13 @@ public class IsAbstractableTest extends Specification {
         Cell baz = root.createChild("baz");
 
         foo.setStem(path("^.bar"));
-        bar.setReaction((new DynamicReaction())
+        bar.setReaction((new DynamicReaction(bar))
                 .add(send("^.baz", "cat")));
         baz.setReaction(catchMessage());
 
-        deliver(root, "°", "foo", "m");
+        deliver(root, "*", "foo", "m");
 
-        assertWasReceived("°.foo.cat");
+        assertWasReceived("*.foo.cat");
     }
 
     @Test
@@ -218,13 +218,13 @@ public class IsAbstractableTest extends Specification {
         Cell baz = root.createChild("baz");
 
         foo.setStem(path("^.bar"));
-        bar.setReaction((new DynamicReaction())
-                .add(send("^.baz", "°.bar")));
+        bar.setReaction((new DynamicReaction(bar))
+                .add(send("^.baz", "*.bar")));
         baz.setReaction(catchMessage());
 
-        deliver(root, "°", "foo", "m");
+        deliver(root, "*", "foo", "m");
 
-        assertWasReceived("°.bar");
+        assertWasReceived("*.bar");
     }
 
     @Test
@@ -235,12 +235,12 @@ public class IsAbstractableTest extends Specification {
         Cell baz = foo.createChild("baz");
 
         foo.setStem(path("^.bar"));
-        bar.setReaction((new DynamicReaction())
+        bar.setReaction((new DynamicReaction(bar))
                 .add(send("baz", "cat")));
         baz.setReaction(catchMessage());
 
-        deliver(root, "°", "foo", "m");
+        deliver(root, "*", "foo", "m");
 
-        assertWasReceived("°.foo.cat");
+        assertWasReceived("*.foo.cat");
     }
 }

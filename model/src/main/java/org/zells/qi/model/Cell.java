@@ -1,14 +1,17 @@
 package org.zells.qi.model;
 
 import org.zells.qi.model.deliver.Delivery;
-import org.zells.qi.model.deliver.Messenger;
-import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.react.Reaction;
 import org.zells.qi.model.refer.Name;
 import org.zells.qi.model.refer.Path;
-import org.zells.qi.model.refer.names.*;
+import org.zells.qi.model.refer.names.Child;
+import org.zells.qi.model.refer.names.Parent;
+import org.zells.qi.model.refer.names.Root;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class Cell implements Courier {
 
@@ -29,6 +32,10 @@ public class Cell implements Courier {
     Cell setStem(Path stem) {
         this.stem = stem;
         return this;
+    }
+
+    public Path getStem() {
+        return stem;
     }
 
     public Cell setReaction(Reaction reaction) {
@@ -128,31 +135,7 @@ public class Cell implements Courier {
     }
 
     private boolean receive(Delivery delivery) {
-        List<MessageSend> sends = reaction.execute(delivery.getMessage());
-
-        if (sends == null) {
-            return true;
-        }
-
-        for (MessageSend send : sends) {
-            Delivery next = delivery.send(
-                    resolve(send.getReceiver(), delivery.getMessage()),
-                    resolve(send.getMessage(), delivery.getMessage())
-            );
-            (new Messenger(this, next)).run();
-        }
+        reaction.execute(delivery);
         return true;
-    }
-
-    private Path resolve(Path path, Path message) {
-        if (path.isEmpty()) {
-            return path;
-        } else if (path.first().equals(Message.name())) {
-            return message.with(path.rest());
-        } else if (path.first().equals(Stem.name())) {
-            return stem.with(path.rest());
-        } else {
-            return path;
-        }
     }
 }

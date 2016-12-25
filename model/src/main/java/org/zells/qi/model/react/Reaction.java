@@ -1,10 +1,8 @@
 package org.zells.qi.model.react;
 
-import org.zells.qi.model.refer.Path;
-
-import java.util.List;
+import org.zells.qi.model.deliver.Delivery;
 
 public interface Reaction {
 
-    List<MessageSend> execute(Path message);
+    void execute(Delivery delivery);
 }

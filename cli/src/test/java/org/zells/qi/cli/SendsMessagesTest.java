@@ -1,7 +1,6 @@
 package org.zells.qi.cli;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.cli.fakes.FakeUser;
 import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
@@ -54,7 +53,7 @@ public class SendsMessagesTest {
 
     @Test
     void SendToRoot() {
-        user.say("°");
+        user.say("*");
         assertEquals(new MessageSend(new Path(Root.name()), new Path()), node.sent);
     }
 
@@ -84,7 +83,7 @@ public class SendsMessagesTest {
 
     @Test
     void SendPathToPath() {
-        user.say("^.foo.bar °.baz");
+        user.say("^.foo.bar *.baz");
         assertEquals(new MessageSend(
                 new Path(Parent.name(), Child.name("foo"), Child.name("bar")),
                 new Path(Root.name(), Child.name("baz"))
@@ -129,9 +128,9 @@ public class SendsMessagesTest {
 
     @Test
     void QuotedRoot() {
-        user.say("\"°\"");
+        user.say("\"*\"");
         assertEquals(new MessageSend(
-                new Path(Child.name("°")),
+                new Path(Child.name("*")),
                 new Path()
         ), node.sent);
     }

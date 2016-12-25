@@ -3,15 +3,14 @@ package org.zells.qi.apps;
 import org.zells.qi.cli.CommandLineInterface;
 import org.zells.qi.cli.ConsoleUser;
 import org.zells.qi.model.Cell;
-import org.zells.qi.model.Courier;
+import org.zells.qi.model.deliver.Delivery;
 import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.react.Reaction;
 import org.zells.qi.model.refer.Path;
-import org.zells.qi.node.connecting.Peer;
 import org.zells.qi.node.connecting.DefaultChannelFactory;
+import org.zells.qi.node.connecting.Peer;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Chatter extends Application {
@@ -42,13 +41,11 @@ public class Chatter extends Application {
         private DefaultChannelFactory channels = new DefaultChannelFactory();
 
         @Override
-        public List<MessageSend> execute(Path message) {
-            String connection = message.last().toString();
+        public void execute(Delivery delivery) {
+            String connection = delivery.getMessage().last().toString();
 
             node.join(connection);
             root.join(new Peer(channels.forConnection(connection)));
-
-            return null;
         }
     }
 
@@ -63,10 +60,9 @@ public class Chatter extends Application {
         }
 
         @Override
-        public List<MessageSend> execute(Path message) {
-            String name = message.last().toString();
+        public void execute(Delivery delivery) {
+            String name = delivery.getMessage().last().toString();
             tell.createChild(name).setReaction(new ChatterReaction(user));
-            return null;
         }
     }
 
@@ -79,9 +75,8 @@ public class Chatter extends Application {
         }
 
         @Override
-        public List<MessageSend> execute(Path message) {
-            re.putChild(message.last().toString(), new TopicCell());
-            return null;
+        public void execute(Delivery delivery) {
+            re.putChild(delivery.getMessage().last().toString(), new TopicCell());
         }
     }
 
@@ -94,9 +89,8 @@ public class Chatter extends Application {
         }
 
         @Override
-        public List<MessageSend> execute(Path message) {
-            user.tell(message.last().toString());
-            return null;
+        public void execute(Delivery delivery) {
+            user.tell(delivery.getMessage().last().toString());
         }
     }
 
@@ -106,16 +100,12 @@ public class Chatter extends Application {
 
         TopicCell() {
             super();
-            createChild("subscribe").setReaction(message -> {
-                subscribers.add(message);
-                return null;
-            });
+            createChild("subscribe").setReaction(delivery -> subscribers.add(delivery.getMessage()));
 
-            setReaction(message -> {
+            setReaction(delivery -> {
                 for (Path receiver : subscribers) {
-                    node.send(new MessageSend(receiver, message));
+                    node.send(new MessageSend(receiver, delivery.getMessage()));
                 }
-                return null;
             });
         }
     }

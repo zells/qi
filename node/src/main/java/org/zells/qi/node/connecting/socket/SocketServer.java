@@ -2,9 +2,9 @@ package org.zells.qi.node.connecting.socket;
 
 import org.zells.qi.node.connecting.Server;
 import org.zells.qi.node.parsing.Input;
-import org.zells.qi.node.singalling.Signal;
 import org.zells.qi.node.parsing.SignalParser;
 import org.zells.qi.node.parsing.SignalPrinter;
+import org.zells.qi.node.singalling.Signal;
 
 import java.io.BufferedReader;
 import java.io.IOException;

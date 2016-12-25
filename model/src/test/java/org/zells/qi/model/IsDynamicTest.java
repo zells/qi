@@ -1,10 +1,10 @@
 package org.zells.qi.model;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.model.react.DynamicReaction;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class IsDynamicTest extends Specification {
 
@@ -21,16 +21,16 @@ public class IsDynamicTest extends Specification {
         Cell cell = new Cell();
         cell.setReaction(catchMessage());
 
-        deliver(cell, "°", "", "m");
-        assertWasReceived("°.m");
+        deliver(cell, "*", "", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
     void NoMessageSends() {
         Cell cell = new Cell();
-        cell.setReaction(new DynamicReaction());
+        cell.setReaction(new DynamicReaction(cell));
 
-        deliver(cell, "°", "", "m");
+        deliver(cell, "*", "", "m");
         assertTrue(wasDelivered);
     }
 
@@ -39,12 +39,12 @@ public class IsDynamicTest extends Specification {
         Cell cell = new Cell();
         Cell foo = cell.createChild("foo");
 
-        cell.setReaction((new DynamicReaction())
+        cell.setReaction((new DynamicReaction(cell))
                 .add(send("foo", "bar")));
         foo.setReaction(catchMessage());
 
-        deliver(cell, "°", "", "m");
-        assertWasReceived("°.bar");
+        deliver(cell, "*", "", "m");
+        assertWasReceived("*.bar");
     }
 
     @Test
@@ -53,12 +53,12 @@ public class IsDynamicTest extends Specification {
         Cell foo = cell.createChild("foo");
         Cell bar = cell.createChild("bar");
 
-        foo.setReaction((new DynamicReaction())
+        foo.setReaction((new DynamicReaction(foo))
                 .add(send("^.bar", "baz")));
         bar.setReaction(catchMessage());
 
-        deliver(cell, "°", "foo", "m");
-        assertWasReceived("°.foo.baz");
+        deliver(cell, "*", "foo", "m");
+        assertWasReceived("*.foo.baz");
     }
 
     @Test
@@ -67,12 +67,12 @@ public class IsDynamicTest extends Specification {
         Cell foo = cell.createChild("foo");
         Cell bar = cell.createChild("bar");
 
-        foo.setReaction((new DynamicReaction())
+        foo.setReaction((new DynamicReaction(foo))
                 .add(send("^.bar", "")));
         bar.setReaction(catchMessage());
 
-        deliver(cell, "°", "foo", "m");
-        assertWasReceived("°.foo");
+        deliver(cell, "*", "foo", "m");
+        assertWasReceived("*.foo");
     }
 
     @Test
@@ -80,12 +80,12 @@ public class IsDynamicTest extends Specification {
         Cell cell = new Cell();
         Cell foo = cell.createChild("foo");
 
-        cell.setReaction((new DynamicReaction())
+        cell.setReaction((new DynamicReaction(cell))
                 .add(send("foo", "@.baz")));
         foo.setReaction(catchMessage());
 
-        deliver(cell, "°", "", "m");
-        assertWasReceived("°.m.baz");
+        deliver(cell, "*", "", "m");
+        assertWasReceived("*.m.baz");
     }
 
     @Test
@@ -94,12 +94,12 @@ public class IsDynamicTest extends Specification {
         Cell foo = cell.createChild("foo");
         Cell baz = foo.createChild("baz");
 
-        cell.setReaction((new DynamicReaction())
+        cell.setReaction((new DynamicReaction(cell))
                 .add(send("@.baz", "bar")));
         baz.setReaction(catchMessage());
 
-        deliver(cell, "°", "", "foo");
-        assertWasReceived("°.bar");
+        deliver(cell, "*", "", "foo");
+        assertWasReceived("*.bar");
     }
 
     @Test
@@ -110,11 +110,11 @@ public class IsDynamicTest extends Specification {
         Cell baz = bar.createChild("baz");
 
         foo.setStem(path("^.bar"));
-        foo.setReaction((new DynamicReaction())
-                .add(send("*.baz", "")));
+        foo.setReaction((new DynamicReaction(foo))
+                .add(send("?.baz", "")));
         baz.setReaction(catchMessage());
 
-        deliver(cell, "°", "foo", "");
-        assertWasReceived("°.foo");
+        deliver(cell, "*", "foo", "");
+        assertWasReceived("*.foo");
     }
 }

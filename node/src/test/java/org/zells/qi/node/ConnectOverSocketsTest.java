@@ -58,10 +58,9 @@ public class ConnectOverSocketsTest {
 
     @Test
     void SendMessage() {
-        rootTwo.setReaction(message -> {
+        rootTwo.setReaction(delivery -> {
             count++;
-            received = message;
-            return null;
+            received = delivery.getMessage();
         });
 
         two.join("localhost:12121");
@@ -76,17 +75,15 @@ public class ConnectOverSocketsTest {
 
     @Test
     void DoesNotBlockSocket() {
-        rootTwo.createChild("foo").setReaction(message -> {
+        rootTwo.createChild("foo").setReaction(delivery -> {
             count++;
             while (received == null) {
                 sleep(10);
             }
-            return null;
         });
-        rootTwo.createChild("bar").setReaction(message -> {
+        rootTwo.createChild("bar").setReaction(delivery -> {
             count++;
-            received = message;
-            return null;
+            received = delivery.getMessage();
         });
 
         two.join("localhost:12121");
@@ -101,10 +98,7 @@ public class ConnectOverSocketsTest {
 
     @Test
     void SerializesPaths() {
-        rootTwo.setReaction(message -> {
-            received = message;
-            return null;
-        });
+        rootTwo.setReaction(delivery -> received = delivery.getMessage());
 
         two.join("localhost:12121");
 

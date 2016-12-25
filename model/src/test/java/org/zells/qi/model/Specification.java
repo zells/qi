@@ -9,9 +9,7 @@ import org.zells.qi.model.refer.Name;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 class Specification {
 
@@ -44,10 +42,7 @@ class Specification {
     }
 
     Reaction catchMessage() {
-        return (message) -> {
-            received = message;
-            return null;
-        };
+        return (delivery) -> received = delivery.getMessage();
     }
 
     void deliver(Cell sending, String context, String receiver, String message) {
@@ -78,11 +73,11 @@ class Specification {
         switch (string) {
             case "^":
                 return Parent.name();
-            case "°":
+            case "*":
                 return Root.name();
             case "@":
                 return Message.name();
-            case "*":
+            case "?":
                 return Stem.name();
             default:
                 return Child.name(string);

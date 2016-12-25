@@ -24,8 +24,8 @@ public class IsDistributedTest extends Specification {
             return true;
         });
 
-        deliver(cell, "°", "", "m");
-        assertWasReceived("°.m");
+        deliver(cell, "*", "", "m");
+        assertWasReceived("*.m");
     }
 
     @Test
@@ -37,9 +37,9 @@ public class IsDistributedTest extends Specification {
             return true;
         });
 
-        deliver(cell, "°", "foo", "m");
+        deliver(cell, "*", "foo", "m");
 
-        assertWasReceived("°.m");
+        assertWasReceived("*.m");
         assertEquals(path("foo"), target);
     }
 
@@ -52,9 +52,9 @@ public class IsDistributedTest extends Specification {
             return true;
         });
 
-        deliver(cell, "°", "foo.bar", "m");
+        deliver(cell, "*", "foo.bar", "m");
 
-        assertWasReceived("°.m");
+        assertWasReceived("*.m");
         assertEquals(path("foo.bar"), target);
     }
 
@@ -66,7 +66,7 @@ public class IsDistributedTest extends Specification {
             return false;
         });
 
-        deliver(cell, "°", "", "m");
+        deliver(cell, "*", "", "m");
         assertNotNull(received);
         assertFalse(wasDelivered);
     }
@@ -85,7 +85,7 @@ public class IsDistributedTest extends Specification {
             return false;
         });
 
-        deliver(cell, "°", "", "m");
+        deliver(cell, "*", "", "m");
 
         assertTrue(reached[0]);
         assertTrue(reached[1]);
@@ -99,12 +99,12 @@ public class IsDistributedTest extends Specification {
         cell.join(peer);
         cell.join(delivery -> false);
 
-        deliver(cell, "°", "", "m");
+        deliver(cell, "*", "", "m");
         assertTrue(wasDelivered);
 
         cell.leave(peer);
 
-        deliver(cell, "°", "", "m");
+        deliver(cell, "*", "", "m");
         assertFalse(wasDelivered);
     }
 
@@ -122,7 +122,7 @@ public class IsDistributedTest extends Specification {
         cell.createChild("bar")
                 .setReaction(catchMessage());
 
-        deliver(cell, "°", "foo", "m");
+        deliver(cell, "*", "foo", "m");
         assertTrue(deliveredToPeer[0]);
     }
 
@@ -140,7 +140,7 @@ public class IsDistributedTest extends Specification {
         cell.join(peer);
         cell.join(peer);
 
-        deliver(cell, "°", "", "m");
+        deliver(cell, "*", "", "m");
         assertEquals(1, count[0]);
     }
 }

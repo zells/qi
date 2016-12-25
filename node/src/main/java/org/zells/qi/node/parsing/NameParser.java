@@ -101,7 +101,7 @@ class NameParser {
 
     private Name toName(String name) {
         switch (name) {
-            case "°":
+            case "*":
                 return Root.name();
             case "^":
                 return Parent.name();

@@ -31,13 +31,13 @@ public class IsConcurrentTest extends Specification {
         cell.createChild("foo").setReaction(catchMessage());
 
         Messenger messenger =
-                (new Messenger(cell, delivery("°", "foo", "m")))
+                (new Messenger(cell, delivery("*", "foo", "m")))
                         .setMaxRetries(0)
                         .run()
                         .waitForIt();
 
         assertTrue(messenger.hasDelivered());
-        assertEquals("°.m", received.toString());
+        assertEquals("*.m", received.toString());
     }
 
 
@@ -45,7 +45,7 @@ public class IsConcurrentTest extends Specification {
     void RepeatDelivery() throws InterruptedException {
         Cell cell = new Cell();
         Messenger messenger =
-                (new Messenger(cell, delivery("°", "foo", "m")))
+                (new Messenger(cell, delivery("*", "foo", "m")))
                         .setMaxRetries(5)
                         .run();
 
@@ -55,25 +55,25 @@ public class IsConcurrentTest extends Specification {
         messenger.waitForIt();
 
         assertTrue(messenger.hasDelivered());
-        assertEquals("°.m", received.toString());
+        assertEquals("*.m", received.toString());
     }
 
     @Test
     void RepeatMessageSends() throws InterruptedException {
         Cell cell = new Cell();
-        cell.setReaction((new DynamicReaction())
+        cell.setReaction((new DynamicReaction(cell))
                 .add(send("foo", "a"))
                 .add(send("bar", "b")));
 
-        deliver(cell, "°", "", "");
+        deliver(cell, "*", "", "");
 
         Thread.sleep(5);
         cell.putChild("bar", (new Cell()).setReaction(catchMessage()));
-        waitForDeliveryOf("°.b");
+        waitForDeliveryOf("*.b");
 
         Thread.sleep(5);
         cell.putChild("foo", (new Cell()).setReaction(catchMessage()));
-        waitForDeliveryOf("°.a");
+        waitForDeliveryOf("*.a");
     }
 
     private void waitForDeliveryOf(String to) throws InterruptedException {
