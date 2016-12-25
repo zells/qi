@@ -2,7 +2,6 @@ package org.zells.qi.model;
 
 import org.junit.jupiter.api.Test;
 import org.zells.qi.model.deliver.Messenger;
-import org.zells.qi.model.react.DynamicReaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -56,31 +55,5 @@ public class IsConcurrentTest extends Specification {
 
         assertTrue(messenger.hasDelivered());
         assertEquals("*.m", received.toString());
-    }
-
-    @Test
-    void RepeatMessageSends() throws InterruptedException {
-        Cell cell = new Cell();
-        cell.setReaction((new DynamicReaction(cell))
-                .add(send("foo", "a"))
-                .add(send("bar", "b")));
-
-        deliver(cell, "*", "", "");
-
-        Thread.sleep(5);
-        cell.putChild("bar", (new Cell()).setReaction(catchMessage()));
-        waitForDeliveryOf("*.b");
-
-        Thread.sleep(5);
-        cell.putChild("foo", (new Cell()).setReaction(catchMessage()));
-        waitForDeliveryOf("*.a");
-    }
-
-    private void waitForDeliveryOf(String to) throws InterruptedException {
-        while (received == null) {
-            Thread.sleep(5);
-        }
-        assertEquals(to, received.toString());
-        received = null;
     }
 }

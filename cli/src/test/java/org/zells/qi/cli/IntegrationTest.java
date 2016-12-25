@@ -1,7 +1,6 @@
 package org.zells.qi.cli;
 
 import org.zells.qi.model.Cell;
-import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.Node;
 import org.zells.qi.node.fakes.FakeChannel;
@@ -22,8 +21,8 @@ public class IntegrationTest {
         }
 
         @Override
-        public void send(MessageSend messageSend, Runnable onFail) {
-            cli.receive(messageSend.getMessage());
+        public void send(Path receiver, Path message, Runnable onFail) {
+            cli.receive(message);
         }
     }
 }

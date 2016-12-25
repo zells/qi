@@ -1,4 +1,4 @@
-package org.zells.qi.model.react;
+package org.zells.qi.model;
 
 import org.zells.qi.model.deliver.Delivery;
 

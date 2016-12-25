@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.cli.fakes.FakeUser;
 import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
-import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Parent;
@@ -36,102 +35,88 @@ public class SendsMessagesTest {
     @Test
     void Empty() {
         user.say("");
-        assertNull(node.sent);
+        assertNull(node.sentTo);
     }
 
     @Test
     void SendSelfToSelf() {
         user.say(".");
-        assertEquals(new MessageSend(new Path(), new Path()), node.sent);
+        assertEquals(new Path(), node.sentTo);
+        assertEquals(new Path(), node.sentMessage);
     }
 
     @Test
     void SendToChild() {
         user.say("foo");
-        assertEquals(new MessageSend(new Path(Child.name("foo")), new Path()), node.sent);
+        assertEquals(new Path(Child.name("foo")), node.sentTo);
     }
 
     @Test
     void SendToRoot() {
         user.say("*");
-        assertEquals(new MessageSend(new Path(Root.name()), new Path()), node.sent);
+        assertEquals(new Path(Root.name()), node.sentTo);
     }
 
     @Test
     void SendToParent() {
         user.say("^");
-        assertEquals(new MessageSend(new Path(Parent.name()), new Path()), node.sent);
+        assertEquals(new Path(Parent.name()), node.sentTo);
     }
 
     @Test
     void SendToPath() {
         user.say("foo.bar");
-        assertEquals(new MessageSend(new Path(Child.name("foo"), Child.name("bar")), new Path()), node.sent);
+        assertEquals(new Path(Child.name("foo"), Child.name("bar")), node.sentTo);
     }
 
     @Test
     void SendToSelf() {
         user.say(". foo");
-        assertEquals(new MessageSend(new Path(), new Path(Child.name("foo"))), node.sent);
+        assertEquals(new Path(), node.sentTo);
+        assertEquals(new Path(Child.name("foo")), node.sentMessage);
     }
 
     @Test
     void SendImplicitlyToSelf() {
         user.say(" foo");
-        assertEquals(new MessageSend(new Path(), new Path(Child.name("foo"))), node.sent);
+        assertEquals(new Path(), node.sentTo);
+        assertEquals(new Path(Child.name("foo")), node.sentMessage);
     }
 
     @Test
     void SendPathToPath() {
         user.say("^.foo.bar *.baz");
-        assertEquals(new MessageSend(
-                new Path(Parent.name(), Child.name("foo"), Child.name("bar")),
-                new Path(Root.name(), Child.name("baz"))
-        ), node.sent);
+        assertEquals(new Path(Parent.name(), Child.name("foo"), Child.name("bar")), node.sentTo);
+        assertEquals(new Path(Root.name(), Child.name("baz")), node.sentMessage);
     }
 
     @Test
     void DotInName() {
         user.say("\"foo.bar\".baz");
-        assertEquals(new MessageSend(
-                new Path(Child.name("foo.bar"), Child.name("baz")),
-                new Path()
-        ), node.sent);
+        assertEquals(new Path(Child.name("foo.bar"), Child.name("baz")), node.sentTo);
     }
 
     @Test
     void SpaceInName() {
         user.say("\"foo bar\".baz");
-        assertEquals(new MessageSend(
-                new Path(Child.name("foo bar"), Child.name("baz")),
-                new Path()
-        ), node.sent);
+        assertEquals(new Path(Child.name("foo bar"), Child.name("baz")), node.sentTo);
     }
 
     @Test
     void QuoteInName() {
         user.say("foo\"bar.baz");
-        assertEquals(new MessageSend(
-                new Path(Child.name("foo\"bar"), Child.name("baz")),
-                new Path()
-        ), node.sent);
+        assertEquals(new Path(Child.name("foo\"bar"), Child.name("baz")), node.sentTo);
     }
 
     @Test
     void QuoteInQuotedName() {
         user.say("\"foo\"\"bar\".baz");
-        assertEquals(new MessageSend(
-                new Path(Child.name("foo\"bar"), Child.name("baz")),
-                new Path()
-        ), node.sent);
+        assertEquals(new Path(Child.name("foo\"bar"), Child.name("baz")), node.sentTo);
     }
 
     @Test
     void QuotedRoot() {
         user.say("\"*\"");
-        assertEquals(new MessageSend(
-                new Path(Child.name("*")),
-                new Path()
-        ), node.sent);
+        assertEquals(new Path(Child.name("*")), node.sentTo);
     }
 }

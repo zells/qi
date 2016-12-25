@@ -1,7 +1,6 @@
 package org.zells.qi.model;
 
 import org.zells.qi.model.deliver.Delivery;
-import org.zells.qi.model.react.Reaction;
 import org.zells.qi.model.refer.Name;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;

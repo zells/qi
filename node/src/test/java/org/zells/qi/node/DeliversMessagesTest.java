@@ -4,8 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.model.Cell;
 import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
-import org.zells.qi.model.react.MessageSend;
-import org.zells.qi.model.react.Reaction;
+import org.zells.qi.model.Reaction;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Root;
@@ -38,7 +37,7 @@ public class DeliversMessagesTest {
         Cell bar = node.cell.createChild("bar");
         bar.setReaction(catchMessage());
 
-        node.send(new MessageSend(new Path(Child.name("bar")), new Path(Child.name("baz"))));
+        node.send(new Path(Child.name("bar")), new Path(Child.name("baz")));
 
         waitForReceived();
         assertEquals(new Path(Root.name(), Child.name("foo"), Child.name("baz")), received);
@@ -46,14 +45,14 @@ public class DeliversMessagesTest {
 
     @Test
     void DeliveryFails() {
-        node.send(new MessageSend(new Path(Child.name("bar")), new Path()));
+        node.send(new Path(Child.name("bar")), new Path());
 
         assertNull(received);
     }
 
     @Test
     void RetryDelivery() {
-        node.send(new MessageSend(new Path(Child.name("bar")), new Path(Child.name("baz"))));
+        node.send(new Path(Child.name("bar")), new Path(Child.name("baz")));
 
         Cell bar = node.cell.createChild("bar");
         bar.setReaction(catchMessage());

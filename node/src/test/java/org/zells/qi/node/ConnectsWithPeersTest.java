@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.model.Cell;
 import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
-import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Root;
@@ -55,7 +54,7 @@ public class ConnectsWithPeersTest {
     void PeerJoins() throws InterruptedException {
         node.server.receive(new JoinSignal(new Path(Root.name(), Child.name("foo")), "other"));
 
-        node.send(new MessageSend(new Path(Child.name("bar")), new Path(Child.name("m"))));
+        node.send(new Path(Child.name("bar")), new Path(Child.name("m")));
 
         while (FakeChannel.channels.get("other").sent == null) {
             Thread.sleep(10);
@@ -75,7 +74,7 @@ public class ConnectsWithPeersTest {
         node.server.receive(new JoinSignal(new Path(Root.name(), Child.name("foo")), "other"));
         node.server.receive(new LeaveSignal(new Path(Root.name(), Child.name("foo")), "other"));
 
-        node.send(new MessageSend(new Path(), new Path(Child.name("m"))));
+        node.send(new Path(), new Path(Child.name("m")));
 
         assertNull(FakeChannel.channels.get("other").sent);
     }

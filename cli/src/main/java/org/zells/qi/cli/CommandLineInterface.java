@@ -24,13 +24,14 @@ public class CommandLineInterface {
 
     private class InputListener implements User.InputListener {
         @Override
-        public void hears(String input) {
-            if (input.isEmpty()) {
+        public void hears(String string) {
+            if (string.isEmpty()) {
                 return;
             }
 
-            node.send(parser.parse(new Input(input)),
-                    () -> user.tell("## Failed to deliver " + input));
+            Input input = new Input(string);
+            node.send(parser.parseReceiver(input), parser.parseMessage(input),
+                    () -> user.tell("## Failed to deliver " + string));
         }
     }
 }

@@ -3,8 +3,6 @@ package org.zells.qi.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.zells.qi.model.deliver.Delivery;
 import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
-import org.zells.qi.model.react.MessageSend;
-import org.zells.qi.model.react.Reaction;
 import org.zells.qi.model.refer.Name;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.*;
@@ -49,10 +47,6 @@ class Specification {
         wasDelivered = sending.deliver(delivery(context, receiver, message));
     }
 
-    MessageSend send(String receiver, String message) {
-        return new MessageSend(path(receiver), path(message));
-    }
-
     Delivery delivery(String context, String receiver, String message) {
         return new Delivery(path(context), path(context).with(path(receiver)), path(context).with(path(message)));
     }
@@ -75,10 +69,6 @@ class Specification {
                 return Parent.name();
             case "*":
                 return Root.name();
-            case "@":
-                return Message.name();
-            case "?":
-                return Stem.name();
             default:
                 return Child.name(string);
         }

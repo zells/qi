@@ -4,8 +4,7 @@ import org.zells.qi.cli.CommandLineInterface;
 import org.zells.qi.cli.ConsoleUser;
 import org.zells.qi.model.Cell;
 import org.zells.qi.model.deliver.Delivery;
-import org.zells.qi.model.react.MessageSend;
-import org.zells.qi.model.react.Reaction;
+import org.zells.qi.model.Reaction;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.connecting.DefaultChannelFactory;
 import org.zells.qi.node.connecting.Peer;
@@ -104,7 +103,7 @@ public class Chatter extends Application {
 
             setReaction(delivery -> {
                 for (Path receiver : subscribers) {
-                    node.send(new MessageSend(receiver, delivery.getMessage()));
+                    node.send(receiver, delivery.getMessage());
                 }
             });
         }

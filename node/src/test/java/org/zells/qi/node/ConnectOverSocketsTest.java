@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.zells.qi.model.Cell;
 import org.zells.qi.model.deliver.GlobalUniqueIdentifierGenerator;
-import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.model.refer.names.Child;
 import org.zells.qi.model.refer.names.Root;
@@ -65,7 +64,7 @@ public class ConnectOverSocketsTest {
 
         two.join("localhost:12121");
 
-        one.send(new MessageSend(new Path(), new Path(Child.name("message"))));
+        one.send(new Path(), new Path(Child.name("message")));
 
         sleep(50);
 
@@ -88,8 +87,8 @@ public class ConnectOverSocketsTest {
 
         two.join("localhost:12121");
 
-        one.send(new MessageSend(new Path(Child.name("foo")), new Path()));
-        one.send(new MessageSend(new Path(Child.name("bar")), new Path()));
+        one.send(new Path(Child.name("foo")), new Path());
+        one.send(new Path(Child.name("bar")), new Path());
 
         sleep(50);
 
@@ -102,7 +101,7 @@ public class ConnectOverSocketsTest {
 
         two.join("localhost:12121");
 
-        one.send(new MessageSend(new Path(), new Path(Child.name("foo bar.baz"))));
+        one.send(new Path(), new Path(Child.name("foo bar.baz")));
 
         sleep(50);
 

@@ -3,7 +3,6 @@ package org.zells.qi.node;
 import org.zells.qi.model.Cell;
 import org.zells.qi.model.deliver.Delivery;
 import org.zells.qi.model.deliver.Messenger;
-import org.zells.qi.model.react.MessageSend;
 import org.zells.qi.model.refer.Path;
 import org.zells.qi.node.connecting.ChannelFactory;
 import org.zells.qi.node.connecting.Peer;
@@ -31,15 +30,15 @@ public class Node {
         server.start(new SignalListener());
     }
 
-    public void send(MessageSend send) {
-        send(send, () -> {});
+    public void send(Path receiver, Path message) {
+        send(receiver, message, () -> {});
     }
 
-    public void send(MessageSend send, Runnable onFailed) {
+    public void send(Path receiver, Path message, Runnable onFailed) {
         (new Messenger(cell, new Delivery(
                 context,
-                context.with(send.getReceiver()),
-                context.with(send.getMessage())
+                context.with(receiver),
+                context.with(message)
         ))).whenFailed(onFailed).run();
     }
 

@@ -1,7 +1,6 @@
 package org.zells.qi.model;
 
 import org.junit.jupiter.api.Test;
-import org.zells.qi.model.react.DynamicReaction;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -45,7 +44,7 @@ public class IsAbstractableTest extends Specification {
         Cell bar = root.createChild("bar");
 
         foo.setStem(path("^.bar"));
-        bar.setReaction(new DynamicReaction(bar));
+        bar.setReaction(delivery -> {});
         foo.setReaction(catchMessage());
 
         deliver(root, "*", "foo", "m");
@@ -201,8 +200,7 @@ public class IsAbstractableTest extends Specification {
         Cell baz = root.createChild("baz");
 
         foo.setStem(path("^.bar"));
-        bar.setReaction((new DynamicReaction(bar))
-                .add(send("^.baz", "cat")));
+        bar.setReaction(delivery -> bar.deliver(delivery.send(path("^.baz"), path("cat"))));
         baz.setReaction(catchMessage());
 
         deliver(root, "*", "foo", "m");
@@ -218,8 +216,7 @@ public class IsAbstractableTest extends Specification {
         Cell baz = root.createChild("baz");
 
         foo.setStem(path("^.bar"));
-        bar.setReaction((new DynamicReaction(bar))
-                .add(send("^.baz", "*.bar")));
+        bar.setReaction(delivery -> bar.deliver(delivery.send(path("^.baz"), path("*.bar"))));
         baz.setReaction(catchMessage());
 
         deliver(root, "*", "foo", "m");
@@ -235,8 +232,7 @@ public class IsAbstractableTest extends Specification {
         Cell baz = foo.createChild("baz");
 
         foo.setStem(path("^.bar"));
-        bar.setReaction((new DynamicReaction(bar))
-                .add(send("baz", "cat")));
+        bar.setReaction(delivery -> bar.deliver(delivery.send(path("baz"), path("cat"))));
         baz.setReaction(catchMessage());
 
         deliver(root, "*", "foo", "m");
