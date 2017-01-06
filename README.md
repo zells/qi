@@ -1,8 +1,8 @@
 # qi [![Build Status](https://travis-ci.org/zells/qi.svg?branch=master)](https://travis-ci.org/zells/qi)
 
-This is a proof-of-concept implementation of the programming model described [here][blog]. The purpose of this project is to demonstrate how the model can be used for communication between objects.
+This is a proof-of-concept implementation of the programming model described [here][model]. The purpose of this project is to demonstrate how the model can be used for communication between objects.
 
-[blog]: http://blog.rtens.org/a-unified-computing-model.html
+[model]: https://github.com/zells/core/blob/master/model.md
 
 
 ## Installation
